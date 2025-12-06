@@ -198,56 +198,65 @@ export default function TapeRecorder() {
 
   return (
     <div className="matrix-wrapper">
-      <div className="matrix-frame">
-        <div className="matrix-layout">
-          
-          {/* CASETOFON */}
-          <div className="tape-wrapper">
-            <img src={tapeBody} alt="Tape Recorder Base" className="tape-bg" />
+      <div className="matrix-shell">
+        <div className="matrix-frame">
+          <div className="matrix-layout">
+            {/* CASETOFON */}
+            <div className="tape-wrapper">
+              <img src={tapeBody} alt="Tape Recorder Base" className="tape-bg" />
 
-            <img
-              src={singleReel}
-              alt="Left Reel"
-              className={`reel reel-left ${isRecording ? 'spin' : ''}`}
-            />
+              <img
+                src={singleReel}
+                alt="Left Reel"
+                className={`reel reel-left ${isRecording ? 'spin' : ''}`}
+              />
 
-            <img
-              src={singleReel}
-              alt="Right Reel"
-              className={`reel reel-right ${isRecording ? 'spin' : ''}`}
-            />
+              <img
+                src={singleReel}
+                alt="Right Reel"
+                className={`reel reel-right ${isRecording ? 'spin' : ''}`}
+              />
 
-            {isRecording && <div className="blink-square"></div>}
+              {isRecording && <div className="blink-square"></div>}
+            </div>
+
+            {/* BUTOANE */}
+            <div className="matrix-buttons">
+              <button 
+                className="mx-btn record" 
+                onClick={handleStartRecording}
+                disabled={isRecording || isProcessing}
+              >
+                {isRecording ? 'RECORD' : 'RECORD'}
+              </button>
+
+              <button 
+                className="mx-btn stop" 
+                onClick={handleStopRecording}
+                disabled={!isRecording}
+              >
+                STOP
+              </button>
+
+              <button className="mx-btn summary">
+                REZUMATUL ZILEI
+              </button>
+
+              <button className="mx-btn todo">
+                TODO'S
+              </button>
+            </div>
           </div>
 
-          {/* BUTOANE */}
-          <div className="matrix-buttons">
-            <button 
-              className="mx-btn record" 
-              onClick={handleStartRecording}
-              disabled={isRecording || isProcessing}
-            >
-              {isRecording ? 'INREGISTRARE...' : 'RECORD'}
-            </button>
+          {/* STATUS MESSAGE */}
+          {statusMessage && (
+            <div className="status-message">
+              {statusMessage}
+            </div>
+          )}
+        </div>
 
-            <button 
-              className="mx-btn stop" 
-              onClick={handleStopRecording}
-              disabled={!isRecording}
-            >
-              STOP
-            </button>
-
-            <button className="mx-btn summary">
-              REZUMATUL ZILEI
-            </button>
-
-            <button className="mx-btn todo">
-              TODO'S
-            </button>
-          </div>
-
-          {/* PANEL INSTRUCTIUNI */}
+        <div className="instructions-frame">
           <div className="instructions-panel">
             <div className="instructions-header">
               CE SA SPUI
@@ -288,15 +297,7 @@ export default function TapeRecorder() {
               </div>
             </div>
           </div>
-
         </div>
-        
-        {/* STATUS MESSAGE */}
-        {statusMessage && (
-          <div className="status-message">
-            {statusMessage}
-          </div>
-        )}
       </div>
     </div>
   );

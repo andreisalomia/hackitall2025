@@ -2,3 +2,8 @@ flask
 flask-cors
 pymongo
 python-dotenv
+anthropic
+SpeechRecognition
+pyaudio
+pydub
+gtts

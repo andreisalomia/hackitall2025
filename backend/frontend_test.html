@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <title>Test Recorder → Backend</title>
+</head>
+<body>
+  <h1>🎤 Test înregistrare și upload la backend</h1>
+
+  <button id="startBtn">Start înregistrare</button>
+  <button id="stopBtn" disabled>Stop și trimite</button>
+
+  <p id="status"></p>
+  <pre id="response"></pre>
+
+  <script>
+    let mediaRecorder;
+    let chunks = [];
+
+    const startBtn = document.getElementById("startBtn");
+    const stopBtn = document.getElementById("stopBtn");
+    const status = document.getElementById("status");
+    const responseBox = document.getElementById("response");
+
+    startBtn.onclick = async () => {
+      chunks = [];
+      responseBox.textContent = "";
+      status.textContent = "🎙 Înregistrare în curs...";
+
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+      mediaRecorder = new MediaRecorder(stream, {
+        mimeType: "audio/webm"  // Browser default
+      });
+
+      mediaRecorder.ondataavailable = (e) => chunks.push(e.data);
+
+      mediaRecorder.onstop = async () => {
+        status.textContent = "Procesare audio...";
+
+        // Construim Blob-ul final
+        const blob = new Blob(chunks, { type: "audio/webm" });
+
+        // Convertim automat la WAV pe backend? 
+        // NU — backend-ul tău actual acceptă doar WAV,
+        // deci facem conversia la WAV în frontend folosind WavEncoder:
+
+        const arrayBuffer = await blob.arrayBuffer();
+        const audioCtx = new AudioContext();
+        const audioData = await audioCtx.decodeAudioData(arrayBuffer);
+
+        // Convertim PCM RAW → WAV
+        const wavBuffer = encodeWAV(audioData);
+        const wavBlob = new Blob([wavBuffer], { type: "audio/wav" });
+
+        // Upload la backend
+        const formData = new FormData();
+        formData.append("audio", wavBlob, "recording.wav");
+
+        status.textContent = "⏳ Trimitere la backend...";
+
+        const resp = await fetch("http://localhost:5000/recordings/upload", {
+          method: "POST",
+          body: formData
+        });
+
+        const json = await resp.json();
+        status.textContent = "✔ Răspuns primit!";
+        responseBox.textContent = JSON.stringify(json, null, 2);
+      };
+
+      mediaRecorder.start();
+      startBtn.disabled = true;
+      stopBtn.disabled = false;
+    };
+
+    stopBtn.onclick = () => {
+      mediaRecorder.stop();
+      startBtn.disabled = false;
+      stopBtn.disabled = true;
+      status.textContent = "Procesare...";
+    };
+
+    // -----------------------------------
+    // Funcție care encodează WAV corect:
+    // PCM 16-bit, 16 kHz, mono
+    // -----------------------------------
+    function encodeWAV(audioBuffer) {
+      const sampleRate = 16000;
+      const channelData = audioBuffer.getChannelData(0); // mono
+
+      // Resampling
+      const resampled = resample(channelData, audioBuffer.sampleRate, sampleRate);
+
+      const buffer = new ArrayBuffer(44 + resampled.length * 2);
+      const view = new DataView(buffer);
+
+      writeString(view, 0, "RIFF");
+      view.setUint32(4, 36 + resampled.length * 2, true);
+      writeString(view, 8, "WAVE");
+      writeString(view, 12, "fmt ");
+      view.setUint32(16, 16, true);
+      view.setUint16(20, 1, true);
+      view.setUint16(22, 1, true); // 1 channel
+      view.setUint32(24, sampleRate, true);
+      view.setUint32(28, sampleRate * 2, true);
+      view.setUint16(32, 2, true);
+      view.setUint16(34, 16, true);
+      writeString(view, 36, "data");
+      view.setUint32(40, resampled.length * 2, true);
+
+      let offset = 44;
+      for (let i = 0; i < resampled.length; i++, offset += 2) {
+        const s = Math.max(-1, Math.min(1, resampled[i]));
+        view.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7fff, true);
+      }
+
+      return buffer;
+    }
+
+    function writeString(view, offset, string) {
+      for (let i = 0; i < string.length; i++) {
+        view.setUint8(offset + i, string.charCodeAt(i));
+      }
+    }
+
+    function resample(data, oldRate, newRate) {
+      const ratio = oldRate / newRate;
+      const newLength = Math.ceil(data.length / ratio);
+      const resampled = new Float32Array(newLength);
+
+      for (let i = 0; i < newLength; i++) {
+        resampled[i] = data[Math.floor(i * ratio)];
+      }
+      return resampled;
+    }
+  </script>
+</body>
+</html>

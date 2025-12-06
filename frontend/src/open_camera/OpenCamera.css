@@ -80,7 +80,7 @@
 .monitor-wrapper {
   position: relative; /* Esențial pentru poziționarea absolută a copilului */
   width: 90%;       /* Ajustează mărimea totală a monitorului pe ecran */
-  max-width: 800px;
+  max-width: 750px;
   aspect-ratio: 4 / 3; /* Presupunând că monitorul e mai pătrățos (retro) */
 }
 
@@ -178,13 +178,28 @@
   /* Added terminal window styling */
 }
 
+.welcome-content-camera {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0px;
+  background: #000000;
+  border: 3px solid #00ff00;
+  padding: 20px;
+  box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+  max-width: 90%;
+  max-height: 94vh;
+  overflow: auto;
+}
+
 .continue-button {
   background: #000000;
   border: 3px solid #00ff00;
   color: #00ff00;
   font-size: 24px;
   font-weight: bold;
-  padding: 16px 48px;
+  padding: 0px 48px;
   cursor: pointer;
   box-shadow: 0 0 10px rgba(0, 255, 0, 0.5), inset 0 0 10px rgba(0, 255, 0, 0.2);
   /* transition: all 0.2s; */
@@ -213,7 +228,7 @@
 
 .finding-user {
   margin-top: 0px;
-  font-size: 30px;
+  font-size: 24px;
   font-weight: bold;
   color: #00ff00;
   text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
@@ -227,7 +242,7 @@
 
 .auth {
   margin-top: 0px;
-  font-size: 30px;
+  font-size: 24px;
   font-weight: bold;
   color: #00ff00;
   text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
@@ -241,7 +256,7 @@
 
 .complete {
   margin-top: 0px;
-  font-size: 30px;
+  font-size: 24px;
   font-weight: bold;
   color: #00ff00;
   text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);

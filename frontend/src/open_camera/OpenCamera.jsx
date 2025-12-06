@@ -43,7 +43,7 @@ const OpenCamera = ({ onNext }) => {
   return (
     <div className="desktop">
       {/* Chenar principal pentru OpenCamera */}
-      <div className="welcome-content">
+      <div className="welcome-content-camera">
         <h1 className="welcome-title-static">TIME CAPSULE 95</h1>
         {/* Wrapper pentru a suprapune video peste imagine */}
         <div className="monitor-wrapper">

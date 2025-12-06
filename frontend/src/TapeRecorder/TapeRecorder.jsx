@@ -4,7 +4,7 @@ import './TapeRecorder.css';
 import tapeBody from './tape2_pixel_modif.png';
 import singleReel from './rola_pixel.png';
 
-export default function MatrixTapeRecorder() {
+export default function TapeRecorder() {
   const [isRecording, setIsRecording] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [statusMessage, setStatusMessage] = useState('');
@@ -12,7 +12,7 @@ export default function MatrixTapeRecorder() {
   const mediaRecorderRef = useRef(null);
   const chunksRef = useRef([]);
 
-  // Funcție pentru convertirea audio la WAV
+  // Functie pentru convertirea audio la WAV
   const encodeWAV = (audioBuffer) => {
     const numOfChannels = audioBuffer.numberOfChannels;
     const sampleRate = audioBuffer.sampleRate;
@@ -90,14 +90,14 @@ export default function MatrixTapeRecorder() {
 
   const handleStartRecording = async () => {
     try {
-      setStatusMessage('🎙️ Se inițializează microfonul...');
+      setStatusMessage('Se initializeaza microfonul...');
       
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       
       // Reset chunks
       chunksRef.current = [];
       
-      // Creăm MediaRecorder
+      // Cream MediaRecorder
       const mimeType = MediaRecorder.isTypeSupported('audio/webm') 
         ? 'audio/webm' 
         : 'audio/ogg';
@@ -106,14 +106,14 @@ export default function MatrixTapeRecorder() {
         mimeType: mimeType
       });
       
-      // Colectăm chunk-urile
+      // Colectam chunk-urile
       mediaRecorderRef.current.ondataavailable = (e) => {
         if (e.data.size > 0) {
           chunksRef.current.push(e.data);
         }
       };
       
-      // La stop, procesăm audio-ul
+      // La stop, procesam audio-ul
       mediaRecorderRef.current.onstop = async () => {
         await processAndSendAudio();
         
@@ -124,11 +124,11 @@ export default function MatrixTapeRecorder() {
       // Start recording
       mediaRecorderRef.current.start();
       setIsRecording(true);
-      setStatusMessage('🔴 Înregistrare în curs...');
+      setStatusMessage('Inregistrare in curs...');
       
     } catch (error) {
-      console.error('Eroare la pornirea înregistrării:', error);
-      setStatusMessage('❌ Eroare: Nu s-a putut accesa microfonul');
+      console.error('Eroare la pornirea inregistrarii:', error);
+      setStatusMessage('Eroare: Nu s-a putut accesa microfonul');
     }
   };
 
@@ -137,7 +137,7 @@ export default function MatrixTapeRecorder() {
       mediaRecorderRef.current.stop();
       setIsRecording(false);
       setIsProcessing(true);
-      setStatusMessage('⏳ Se procesează audio-ul...');
+      setStatusMessage('Se proceseaza audio-ul...');
     }
   };
 
@@ -146,7 +146,7 @@ export default function MatrixTapeRecorder() {
       // Construim blob-ul din chunks
       const blob = new Blob(chunksRef.current, { type: 'audio/webm' });
       
-      setStatusMessage('🔄 Se convertește la WAV...');
+      setStatusMessage('Se converteste la WAV...');
       
       // Convertim la WAV
       const arrayBuffer = await blob.arrayBuffer();
@@ -156,7 +156,7 @@ export default function MatrixTapeRecorder() {
       const wavBuffer = encodeWAV(audioBuffer);
       const wavBlob = new Blob([wavBuffer], { type: 'audio/wav' });
       
-      setStatusMessage('📤 Se trimite la server...');
+      setStatusMessage('Se trimite la server...');
       
       // Trimitem la backend
       const formData = new FormData();
@@ -170,28 +170,28 @@ export default function MatrixTapeRecorder() {
       const result = await response.json();
       
       if (result.success) {
-        setStatusMessage('✅ Procesare completă!');
+        setStatusMessage('Procesare completa!');
         
-        // Afișăm rezultatul în consolă
+        // Afisam rezultatul in consola
         console.log('=== REZULTAT PROCESARE ===');
         console.log('Transcriere:', result.transcription);
         console.log('Clasificare:', result.classification);
         console.log('ID salvat:', result.saved_id);
         console.log('========================');
         
-        // Reset după 3 secunde
+        // Reset dupa 3 secunde
         setTimeout(() => {
           setStatusMessage('');
           setIsProcessing(false);
         }, 3000);
         
       } else {
-        throw new Error(result.error || 'Eroare necunoscută');
+        throw new Error(result.error || 'Eroare necunoscuta');
       }
       
     } catch (error) {
       console.error('Eroare la procesarea audio:', error);
-      setStatusMessage(`❌ Eroare: ${error.message}`);
+      setStatusMessage(`Eroare: ${error.message}`);
       setIsProcessing(false);
     }
   };
@@ -227,7 +227,7 @@ export default function MatrixTapeRecorder() {
               onClick={handleStartRecording}
               disabled={isRecording || isProcessing}
             >
-              {isRecording ? 'ÎNREGISTRARE...' : 'RECORD'}
+              {isRecording ? 'INREGISTRARE...' : 'RECORD'}
             </button>
 
             <button 
@@ -245,6 +245,48 @@ export default function MatrixTapeRecorder() {
             <button className="mx-btn todo">
               TODO'S
             </button>
+          </div>
+
+          {/* PANEL INSTRUCTIUNI */}
+          <div className="instructions-panel">
+            <div className="instructions-header">
+              CE SA SPUI
+            </div>
+            
+            <div className="instructions-content">
+              <div className="instruction-section">
+                <div className="instruction-title">NOTITE PERSONALE:</div>
+                <div className="instruction-text">
+                  "Astazi am fost la piata"
+                </div>
+                <div className="instruction-text">
+                  "Mi-am amintit de o intamplare"
+                </div>
+                <div className="instruction-text">
+                  "M-am simtit obosit"
+                </div>
+              </div>
+
+              <div className="instruction-section">
+                <div className="instruction-title">LUCRURI DE FACUT:</div>
+                <div className="instruction-text">
+                  "Trebuie sa iau pastilele <strong>maine dimineata la 9</strong>"
+                </div>
+                <div className="instruction-text">
+                  "Nu uita sa suni la doctor <strong>vineri</strong>"
+                </div>
+                <div className="instruction-text">
+                  "Plata factura <strong>pana pe 15</strong>"
+                </div>
+              </div>
+
+              <div className="instruction-tips">
+                <div className="tip-title">IMPORTANT:</div>
+                <div className="tip-item">• Spune cand (azi, maine, luni)</div>
+                <div className="tip-item">• Spune ora (dimineata, la 3)</div>
+                <div className="tip-item">• Vorbeste natural si clar</div>
+              </div>
+            </div>
           </div>
 
         </div>

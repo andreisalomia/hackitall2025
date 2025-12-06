@@ -12,51 +12,37 @@ claude_service = ClaudeService()
 
 @recordings_bp.route('/recordings/upload', methods=['POST'])
 def upload_recording():
-    """
-    Primește un fișier audio, îl transcrie și îl clasifică.
-    
-    Expected: FormData cu 'audio' file
-    Returns: {
-        "success": true,
-        "transcription": "...",
-        "classification": {...},
-        "saved_id": "..."
-    }
-    """
-    
     try:
-        # Verificăm dacă avem fișier audio
         if 'audio' not in request.files:
-            return jsonify({"error": "Nu s-a găsit fișierul audio"}), 400
+            return jsonify({"error": "Nu s-a gasit fisierul audio"}), 400
         
         audio_file = request.files['audio']
         
         if audio_file.filename == '':
-            return jsonify({"error": "Fișier invalid"}), 400
+            return jsonify({"error": "Fisier invalid"}), 400
         
-        # STEP 1: Transcrie audio-ul
         try:
             transcription = speech_service.transcribe_audio(audio_file)
-            print(f"Transcription: {transcription}")
+            print(f"📝 Transcription: {transcription}")
         except Exception as e:
             return jsonify({"error": f"Eroare la transcriere: {str(e)}"}), 500
         
-        # STEP 2: Clasifică și extrage informații cu Claude
         try:
             classification = claude_service.classify_and_extract(transcription)
-            print(f"Classification: {classification}")
+            print(f"🤖 Classification: {classification}")
         except Exception as e:
             return jsonify({"error": f"Eroare la clasificare: {str(e)}"}), 500
         
-        # STEP 3: Salvează în MongoDB
         recording_type = classification['type']
         
         if recording_type == 'JURNAL':
             saved_id = _save_journal_entry(transcription, classification['data'])
+            print(f"Saved journal entry: {saved_id}")
         elif recording_type == 'TODO':
             saved_id = _save_todo(transcription, classification['data'])
+            print(f"Saved TODO: {saved_id}")
         else:
-            return jsonify({"error": "Tip necunoscut de înregistrare"}), 500
+            return jsonify({"error": "Tip necunoscut de inregistrare"}), 500
         
         return jsonify({
             "success": True,
@@ -66,20 +52,22 @@ def upload_recording():
         }), 200
         
     except Exception as e:
-        print(f"Error in upload_recording: {e}")
+        print(f"❌ Error in upload_recording: {e}")
         return jsonify({"error": str(e)}), 500
 
 
 def _save_journal_entry(transcription, data):
-    """Salvează o intrare de jurnal în DB."""
-    
     entry = {
         "type": "JURNAL",
         "transcription": transcription,
         "content": data.get('content'),
-        "sentiment": data.get('sentiment'),
+        "sentiment": data.get('sentiment', 'neutru'),
         "summary": data.get('summary'),
         "keywords": data.get('keywords', []),
+
+        "mood": data.get('mood', 'neutru'),
+        "energy_level": data.get('energy_level', 'mediu'),
+        
         "timestamp": datetime.utcnow(),
         "date": datetime.utcnow().strftime("%Y-%m-%d")
     }
@@ -89,17 +77,22 @@ def _save_journal_entry(transcription, data):
 
 
 def _save_todo(transcription, data):
-    """Salvează un TODO în DB."""
-    
-    # Parsăm datele de timp dacă există
     due_datetime = None
     if data.get('due_date'):
         try:
             date_str = data['due_date']
-            time_str = data.get('due_time', '09:00')  # default dimineața
+            time_str = data.get('due_time', '09:00')
             due_datetime = datetime.strptime(f"{date_str} {time_str}", "%Y-%m-%d %H:%M")
         except Exception as e:
             print(f"Error parsing date/time: {e}")
+    
+    recurrent = data.get('recurrent', {})
+    if not isinstance(recurrent, dict):
+        recurrent = {
+            'is_recurrent': False,
+            'frequency': None,
+            'days_of_week': None
+        }
     
     todo = {
         "type": "TODO",
@@ -111,6 +104,11 @@ def _save_todo(transcription, data):
         "due_datetime": due_datetime,
         "reminder_minutes_before": data.get('reminder_minutes_before', 15),
         "category": data.get('category', 'altele'),
+        
+        "estimated_duration": data.get('estimated_duration'),
+        "recurrent": recurrent,
+        "subtasks": data.get('subtasks', []),
+        
         "completed": False,
         "created_at": datetime.utcnow()
     }
@@ -121,19 +119,14 @@ def _save_todo(transcription, data):
 
 @recordings_bp.route('/journal/today', methods=['GET'])
 def get_today_journal():
-    """
-    Returnează toate intrările de jurnal de astăzi.
-    """
-    
     try:
         today = datetime.utcnow().strftime("%Y-%m-%d")
         
         entries = list(db.journal_entries.find(
             {"date": today},
-            {"_id": 0}  # excludem _id pentru JSON serialization
+            {"_id": 0}
         ).sort("timestamp", -1))
         
-        # Convertim datetime objects la string
         for entry in entries:
             if 'timestamp' in entry:
                 entry['timestamp'] = entry['timestamp'].isoformat()
@@ -151,16 +144,9 @@ def get_today_journal():
 
 @recordings_bp.route('/journal/summary', methods=['GET'])
 def get_daily_summary():
-    """
-    Generează un rezumat al zilei pe baza intrărilor din jurnal.
-    Query params: date (YYYY-MM-DD, opțional - default: azi)
-    """
-    
     try:
-        # Get date from query params sau folosim azi
         target_date = request.args.get('date', datetime.utcnow().strftime("%Y-%m-%d"))
         
-        # Obținem intrările
         entries = list(db.journal_entries.find(
             {"date": target_date}
         ).sort("timestamp", 1))
@@ -169,10 +155,9 @@ def get_daily_summary():
             return jsonify({
                 "success": True,
                 "date": target_date,
-                "summary": "Nu există intrări în jurnal pentru această zi."
+                "summary": "Nu exista intrari in jurnal pentru aceasta zi."
             }), 200
         
-        # Generăm rezumatul cu Claude
         summary = claude_service.generate_daily_summary(entries)
         
         return jsonify({
@@ -186,18 +171,99 @@ def get_daily_summary():
         return jsonify({"error": str(e)}), 500
 
 
+@recordings_bp.route('/journal/stats', methods=['GET'])
+def get_journal_stats():
+    try:
+        period = request.args.get('period', 'week')
+
+        now = datetime.utcnow()
+        if period == 'week':
+            start_date = (now - timedelta(days=7)).strftime("%Y-%m-%d")
+        elif period == 'month':
+            start_date = (now - timedelta(days=30)).strftime("%Y-%m-%d")
+        elif period == 'year':
+            start_date = (now - timedelta(days=365)).strftime("%Y-%m-%d")
+        else:
+            start_date = (now - timedelta(days=7)).strftime("%Y-%m-%d")
+        
+        pipeline = [
+            {
+                "$match": {
+                    "date": {"$gte": start_date}
+                }
+            },
+            {
+                "$group": {
+                    "_id": None,
+                    "total_entries": {"$sum": 1},
+                    "sentiments": {
+                        "$push": "$sentiment"
+                    },
+                    "moods": {
+                        "$push": "$mood"
+                    },
+                    "energy_levels": {
+                        "$push": "$energy_level"
+                    }
+                }
+            }
+        ]
+        
+        result = list(db.journal_entries.aggregate(pipeline))
+        
+        if not result:
+            return jsonify({
+                "success": True,
+                "period": period,
+                "stats": {
+                    "total_entries": 0,
+                    "sentiment_breakdown": {},
+                    "mood_breakdown": {},
+                    "energy_breakdown": {}
+                }
+            }), 200
+        
+        stats = result[0]
+        
+        from collections import Counter
+        
+        sentiment_counter = Counter(stats['sentiments'])
+        mood_counter = Counter(stats['moods'])
+        energy_counter = Counter(stats['energy_levels'])
+        
+        return jsonify({
+            "success": True,
+            "period": period,
+            "start_date": start_date,
+            "stats": {
+                "total_entries": stats['total_entries'],
+                "sentiment_breakdown": dict(sentiment_counter),
+                "mood_breakdown": dict(mood_counter),
+                "energy_breakdown": dict(energy_counter)
+            }
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 @recordings_bp.route('/todos/active', methods=['GET'])
 def get_active_todos():
-    """
-    Returnează toate TODO-urile active (necompletate).
-    """
-    
     try:
-        todos = list(db.todos.find(
-            {"completed": False}
-        ).sort("due_datetime", 1))
+        query = {"completed": False}
         
-        # Convertim ObjectId și datetime
+        if request.args.get('category'):
+            query['category'] = request.args.get('category')
+        
+        if request.args.get('priority'):
+            query['priority'] = request.args.get('priority')
+        
+        if request.args.get('recurrent'):
+            is_recurrent = request.args.get('recurrent').lower() == 'true'
+            query['recurrent.is_recurrent'] = is_recurrent
+        
+        todos = list(db.todos.find(query).sort("due_datetime", 1))
+        
         for todo in todos:
             todo['_id'] = str(todo['_id'])
             if 'created_at' in todo and todo['created_at']:
@@ -217,10 +283,6 @@ def get_active_todos():
 
 @recordings_bp.route('/todos/<todo_id>/complete', methods=['PUT'])
 def complete_todo(todo_id):
-    """
-    Marchează un TODO ca fiind completat.
-    """
-    
     try:
         result = db.todos.update_one(
             {"_id": ObjectId(todo_id)},
@@ -233,7 +295,7 @@ def complete_todo(todo_id):
         )
         
         if result.matched_count == 0:
-            return jsonify({"error": "TODO-ul nu a fost găsit"}), 404
+            return jsonify({"error": "TODO-ul nu a fost gasit"}), 404
         
         return jsonify({
             "success": True,
@@ -246,25 +308,20 @@ def complete_todo(todo_id):
 
 @recordings_bp.route('/todos/upcoming', methods=['GET'])
 def get_upcoming_todos():
-    """
-    Returnează TODO-urile care trebuie să fie reminder-uite în următoarele ore.
-    Util pentru sistem de notificări.
-    """
-    
     try:
-        # TODO-uri în următoarele 24 ore
+        hours = int(request.args.get('hours', 24))
+        
         now = datetime.utcnow()
-        tomorrow = now + timedelta(hours=24)
+        future = now + timedelta(hours=hours)
         
         todos = list(db.todos.find({
             "completed": False,
             "due_datetime": {
                 "$gte": now,
-                "$lte": tomorrow
+                "$lte": future
             }
         }).sort("due_datetime", 1))
         
-        # Convertim pentru JSON
         for todo in todos:
             todo['_id'] = str(todo['_id'])
             if 'created_at' in todo and todo['created_at']:
@@ -274,8 +331,76 @@ def get_upcoming_todos():
         
         return jsonify({
             "success": True,
+            "time_window": f"{hours} hours",
             "count": len(todos),
             "todos": todos
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@recordings_bp.route('/todos/by-category', methods=['GET'])
+def get_todos_by_category():
+    try:
+        pipeline = [
+            {
+                "$match": {"completed": False}
+            },
+            {
+                "$group": {
+                    "_id": "$category",
+                    "count": {"$sum": 1},
+                    "tasks": {
+                        "$push": {
+                            "id": {"$toString": "$_id"},
+                            "task": "$task",
+                            "priority": "$priority",
+                            "due_date": "$due_date",
+                            "due_time": "$due_time"
+                        }
+                    }
+                }
+            },
+            {
+                "$sort": {"count": -1}
+            }
+        ]
+        
+        result = list(db.todos.aggregate(pipeline))
+        
+        return jsonify({
+            "success": True,
+            "categories": result
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@recordings_bp.route('/journal/weekly-insights', methods=['GET'])
+def get_weekly_insights():
+    try:
+        now = datetime.utcnow()
+        week_ago = (now - timedelta(days=7)).strftime("%Y-%m-%d")
+        
+        entries = list(db.journal_entries.find({
+            "date": {"$gte": week_ago}
+        }).sort("date", 1))
+        
+        if not entries:
+            return jsonify({
+                "success": True,
+                "insights": "Nu exista suficiente intrari pentru a genera insights."
+            }), 200
+        
+        insights = claude_service.generate_weekly_insights(entries)
+        
+        return jsonify({
+            "success": True,
+            "period": f"{week_ago} - {now.strftime('%Y-%m-%d')}",
+            "entries_analyzed": len(entries),
+            "insights": insights
         }), 200
         
     except Exception as e:

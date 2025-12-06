@@ -1,0 +1,142 @@
+.capsules-container {
+  height: 100%;
+  display: flex;
+  gap: 12px;
+}
+
+.capsules-list {
+  flex: 1;
+  background: white;
+  border: 2px inset #808080;
+  display: flex;
+  flex-direction: column;
+}
+
+.list-header {
+  display: grid;
+  grid-template-columns: 40px 1fr 120px 100px;
+  gap: 8px;
+  padding: 4px 8px;
+  background: #000080;
+  color: white;
+  font-weight: bold;
+  font-size: 12px;
+  border-bottom: 2px solid #808080;
+}
+
+.capsule-item {
+  display: grid;
+  grid-template-columns: 40px 1fr 120px 100px;
+  gap: 8px;
+  padding: 6px 8px;
+  cursor: pointer;
+  border-bottom: 1px solid #c0c0c0;
+  font-size: 12px;
+}
+
+.capsule-item:hover {
+  background: #0000aa;
+  color: white;
+}
+
+.capsule-item.selected {
+  background: #000080;
+  color: white;
+}
+
+.item-icon {
+  text-align: center;
+}
+
+.empty-state {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: #808080;
+}
+
+.empty-icon {
+  font-size: 48px;
+}
+
+.capsule-details {
+  width: 300px;
+  background: white;
+  border: 2px inset #808080;
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+}
+
+.details-header {
+  padding-bottom: 8px;
+  border-bottom: 2px groove #c0c0c0;
+  margin-bottom: 12px;
+}
+
+.details-header h3 {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.details-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.detail-row strong {
+  color: #000080;
+}
+
+.detail-message {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.message-box {
+  background: #ffffcc;
+  border: 2px inset #808080;
+  padding: 8px;
+  font-size: 11px;
+  line-height: 1.4;
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.details-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 2px groove #c0c0c0;
+}
+
+.win95-button {
+  background: #c0c0c0;
+  border: 2px outset #ffffff;
+  padding: 6px 12px;
+  font-size: 12px;
+  flex: 1;
+}
+
+.win95-button:active {
+  border-style: inset;
+}
+
+.win95-button.primary {
+  font-weight: bold;
+}

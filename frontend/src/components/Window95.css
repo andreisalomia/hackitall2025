@@ -1,0 +1,61 @@
+.window-95 {
+  position: absolute;
+  background: #c0c0c0;
+  border: 2px outset #ffffff;
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+}
+
+.title-bar {
+  background: linear-gradient(to right, #000080, #1084d0);
+  padding: 3px 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: move;
+  user-select: none;
+}
+
+.title-bar-text {
+  color: white;
+  font-weight: bold;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+}
+
+.title-bar-controls {
+  display: flex;
+  gap: 2px;
+}
+
+.title-bar-button {
+  width: 20px;
+  height: 18px;
+  background: #c0c0c0;
+  border: 2px outset #ffffff;
+  font-size: 12px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  line-height: 1;
+}
+
+.title-bar-button:active {
+  border-style: inset;
+}
+
+.title-bar-button.close:hover {
+  background: #cc0000;
+  color: white;
+}
+
+.window-body {
+  flex: 1;
+  overflow: auto;
+  background: #c0c0c0;
+  padding: 8px;
+}

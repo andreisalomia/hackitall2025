@@ -1,0 +1,26 @@
+@import url("https://fonts.googleapis.com/css2?family=MS+Sans+Serif:wght@400;700&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "MS Sans Serif", Arial, sans-serif;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: grayscale;
+  image-rendering: pixelated;
+  overflow: hidden;
+}
+
+button {
+  font-family: "MS Sans Serif", Arial, sans-serif;
+  cursor: pointer;
+}
+
+input,
+textarea,
+select {
+  font-family: "MS Sans Serif", Arial, sans-serif;
+}

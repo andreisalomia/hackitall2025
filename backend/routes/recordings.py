@@ -245,6 +245,53 @@ def get_journal_stats():
         
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+@recordings_bp.route('/todos/weekly-report', methods=['GET'])
+def get_weekly_todo_report():
+    try:
+        now = datetime.utcnow()
+        week_ago = now - timedelta(days=7)
+
+        todos = list(db.todos.find({
+            "created_at": {"$gte": week_ago}
+        }))
+
+        if not todos:
+            return jsonify({
+                "success": True,
+                "report": "Nu există suficiente date pentru raport."
+            }), 200
+
+        completed = [t for t in todos if t.get("completed")]
+        pending = [t for t in todos if not t.get("completed")]
+
+        from collections import Counter
+        category_count = Counter(t.get("category", "necunoscut") for t in todos)
+        priority_count = Counter(t.get("priority", "necunoscuta") for t in todos)
+
+        report = {
+            "period": f"{week_ago.strftime('%Y-%m-%d')} → {now.strftime('%Y-%m-%d')}",
+            "total_tasks": len(todos),
+            "completed_tasks": len(completed),
+            "pending_tasks": len(pending),
+            "completion_rate": round((len(completed) / len(todos)) * 100, 2) if todos else 0,
+            "categories": dict(category_count),
+            "priorities": dict(priority_count),
+            "completed_list": [
+                {"task": t.get("task"), "date": t.get("completed_at")}
+                for t in completed
+            ],
+            "pending_list": [
+                {"task": t.get("task"), "due": t.get("due_datetime")}
+                for t in pending
+            ]
+        }
+
+        return jsonify({"success": True, "report": report}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 
 
 @recordings_bp.route('/todos/active', methods=['GET'])

@@ -1,0 +1,235 @@
+.desktop {
+  width: 100vw;
+  height: 100vh;
+  /* Changed from teal to black for full terminal aesthetic */
+  background: #000000;
+  position: relative;
+  overflow: hidden;
+}
+
+.desktop-icons {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  position: relative;
+  z-index: 1;
+}
+
+.my-computer-content {
+  padding: 24px;
+  display: flex;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.drive-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 12px;
+  border: 2px solid transparent;
+}
+
+.drive-icon:hover {
+  border: 2px dotted #000080;
+  background: rgba(0, 0, 128, 0.1);
+}
+
+.drive-emoji {
+  font-size: 48px;
+  filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.2));
+}
+
+.drive-icon span:last-child {
+  font-size: 12px;
+  color: #000;
+}
+
+.dashboard-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 100%;
+}
+
+.dashboard-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #000080;
+  margin: 0 0 8px 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #c0c0c0;
+}
+
+.dashboard-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.form-group {
+  display: flex;
+  gap: 8px;
+}
+
+.win95-input {
+  flex: 1;
+  padding: 6px 8px;
+  border: 2px inset #808080;
+  background: white;
+  font-family: "MS Sans Serif", Arial, sans-serif;
+  font-size: 13px;
+}
+
+.win95-input:focus {
+  outline: 1px dotted #000;
+  outline-offset: -4px;
+}
+
+.win95-button {
+  background: #c0c0c0;
+  border: 2px outset #ffffff;
+  padding: 6px 16px;
+  font-family: "MS Sans Serif", Arial, sans-serif;
+  font-size: 13px;
+  font-weight: normal;
+  cursor: pointer;
+  min-width: 75px;
+}
+
+.win95-button:hover {
+  background: #d4d4d4;
+}
+
+.win95-button:active {
+  border-style: inset;
+  padding: 7px 15px 5px 17px;
+}
+
+.items-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 200px;
+}
+
+.list-header {
+  font-size: 12px;
+  font-weight: bold;
+  color: #000;
+  margin-bottom: 4px;
+}
+
+.win95-list {
+  list-style: none;
+  padding: 8px;
+  margin: 0;
+  border: 2px inset #808080;
+  background: white;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.list-item {
+  padding: 4px 8px;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 13px;
+}
+
+.list-item:last-child {
+  border-bottom: none;
+}
+
+.no-items {
+  padding: 20px;
+  text-align: center;
+  color: #808080;
+  font-style: italic;
+  font-size: 13px;
+  border: 2px inset #808080;
+  background: white;
+}
+
+.back-button {
+  align-self: flex-start;
+  margin-top: 8px;
+}
+
+.taskbar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background: #c0c0c0;
+  border-top: 2px solid #ffffff;
+  display: flex;
+  align-items: center;
+  padding: 2px;
+  gap: 4px;
+  z-index: 1000;
+}
+
+.start-btn {
+  background: #c0c0c0;
+  border: 2px outset #ffffff;
+  padding: 4px 8px;
+  font-weight: bold;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 32px;
+  cursor: pointer;
+}
+
+.start-btn:active {
+  border-style: inset;
+}
+
+.start-logo {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.taskbar-divider {
+  width: 2px;
+  height: 32px;
+  background: linear-gradient(to right, #808080, #ffffff);
+  margin: 0 4px;
+}
+
+.taskbar-apps {
+  flex: 1;
+  display: flex;
+  gap: 4px;
+}
+
+.taskbar-app {
+  background: #c0c0c0;
+  border: 2px outset #ffffff;
+  padding: 4px 12px;
+  font-size: 12px;
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.taskbar-app.active {
+  border-style: inset;
+  background: #ffffff;
+}
+
+.taskbar-tray {
+  border: 2px inset #808080;
+  padding: 4px 8px;
+  font-size: 12px;
+  background: #c0c0c0;
+}

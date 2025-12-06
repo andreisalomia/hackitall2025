@@ -1,0 +1,84 @@
+.form-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px groove #ffffff;
+}
+
+.form-icon {
+  font-size: 32px;
+}
+
+.form-header h2 {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.win95-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.form-group label {
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.win95-input,
+.win95-textarea {
+  background: white;
+  border: 2px inset #808080;
+  padding: 4px 6px;
+  font-size: 13px;
+}
+
+.win95-input:focus,
+.win95-textarea:focus {
+  outline: 1px dotted #000;
+  outline-offset: -4px;
+}
+
+.win95-textarea {
+  resize: vertical;
+  font-family: "MS Sans Serif", Arial, sans-serif;
+}
+
+.form-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 8px;
+  padding-top: 16px;
+  border-top: 2px groove #ffffff;
+}
+
+.win95-button {
+  background: #c0c0c0;
+  border: 2px outset #ffffff;
+  padding: 6px 16px;
+  font-size: 13px;
+  min-width: 80px;
+}
+
+.win95-button:active {
+  border-style: inset;
+}
+
+.win95-button.primary {
+  font-weight: bold;
+}

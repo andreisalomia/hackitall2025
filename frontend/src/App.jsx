@@ -1,15 +1,24 @@
-import { useState, useEffect } from 'react'
-import axios from 'axios'
-import LandingPage from './landing_page/LandingPage';
-import OpenCamera from './open_camera/OpenCamera';
-import './index.css'; // Asigură-te că ai importat CSS-ul de mai sus
+"use client"
 
-const API_URL = 'http://localhost:5000'
+import { useState, useEffect } from "react"
+import axios from "axios"
+import LandingPage from "./landing_page/LandingPage"
+import MainApp from "./components/MainApp"
+import "./App.css"
+import OpenCamera from './open_camera/OpenCamera';
+import TapeRecorder from './TapeRecorder/TapeRecorder'; // Presupun că aici e componenta finală
+import './index.css'; 
+
+const API_URL = "http://localhost:5000"
 
 function App() {
+  // --- NOUTATE: Starea acum poate fi 'landing', 'camera', sau 'recorder' ---
+  const [currentPage, setCurrentPage] = useState('landing');
+
+  // (Restul codului pentru items poate rămâne, deși nu e folosit în UI acum)
   const [items, setItems] = useState([])
-  const [name, setName] = useState('')
-  const [gameStarted, setGameStarted] = useState(false);
+  const [name, setName] = useState("")
+  const [gameStarted, setGameStarted] = useState(false)
 
   useEffect(() => {
     fetchItems()
@@ -17,29 +26,50 @@ function App() {
 
   const fetchItems = async () => {
     try {
-        const res = await axios.get(`${API_URL}/items`)
-        setItems(res.data)
+      const res = await axios.get(`${API_URL}/items`)
+      setItems(res.data)
     } catch (error) {
-        console.error("Backend error:", error);
+      console.error("Backend-ul nu răspunde, dar e ok, lucrăm la frontend", error)
     }
   }
 
-  // Nu mai folosim "if (!gameStarted) return ...", ci returnăm ambele
+  const addItem = async (e) => {
+    e.preventDefault()
+    if (!name) return
+    await axios.post(`${API_URL}/items`, { name })
+    setName("")
+    fetchItems()
+  }
+
+  if (!gameStarted) {
+    return <LandingPage onStart={() => setGameStarted(true)} />
+  }
+
   return (
     <div className="app-container">
       
-      {/* 1. Landing Page (Layer 1) */}
-      <div className={`fade-page ${!gameStarted ? 'visible' : 'hidden'}`}>
-        <LandingPage onStart={() => setGameStarted(true)} />
+      {/* LANDING PAGE */}
+      <div className={`fade-layer ${currentPage === 'landing' ? 'visible' : 'hidden'}`}>
+        <LandingPage onStart={() => setCurrentPage('camera')} />
       </div>
 
-      {/* 2. Open Camera (Layer 2) */}
-      <div className={`fade-page ${gameStarted ? 'visible' : 'hidden'}`}>
-        <OpenCamera />
+      {/* CAMERA PAGE */}
+      {/* Verifică dacă ai scris 'camera' corect aici și în onStart-ul de mai sus */}
+      <div className={`fade-layer ${currentPage === 'camera' ? 'visible' : 'hidden'}`}>
+        {/* Folosim condiția && pentru a monta componenta doar când e nevoie */}
+        {currentPage === 'camera' && (
+           <OpenCamera onNext={() => setCurrentPage('recorder')} />
+        )}
+      </div>
+
+      {/* RECORDER PAGE */}
+      <div className={`fade-layer ${currentPage === 'recorder' ? 'visible' : 'hidden'}`}>
+        <TapeRecorder />
       </div>
 
     </div>
   )
+// ...
 }
 
 export default App

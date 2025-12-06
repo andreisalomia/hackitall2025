@@ -7,31 +7,28 @@
   overflow: hidden;
 }
 
-/* Clasa comună pentru ambele ecrane (Landing și Camera) */
-.fade-page {
+
+.fade-layer {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  transition: opacity 1s ease-in-out; /* Durata tranziției: 1 secundă */
-  
-  /* Centrare conținut (opțional, dar recomandat) */
-  display: flex;
+  transition: opacity 1s ease-in-out;
+  display: flex;       /* Asigură centrarea conținutului */
   justify-content: center;
   align-items: center;
+  background-color: #282c34; /* Asigură un fundal, ca să nu fie transparent */
 }
 
-/* Starea vizibilă */
-.fade-page.visible {
+.fade-layer.visible {
   opacity: 1;
-  pointer-events: auto; /* Permite click-uri */
-  z-index: 2;
+  pointer-events: auto;
+  z-index: 100; /* STRATUL DE SUS - Trebuie să fie mare! */
 }
 
-/* Starea invizibilă */
-.fade-page.hidden {
+.fade-layer.hidden {
   opacity: 0;
-  pointer-events: none; /* Blochează click-urile pe elementul ascuns */
-  z-index: 1;
+  pointer-events: none;
+  z-index: 0;   /* STRATUL DE JOS */
 }

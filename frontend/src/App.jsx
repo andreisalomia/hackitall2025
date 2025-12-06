@@ -1,45 +1,53 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+// Asigură-te că importurile sunt corecte
 import LandingPage from './landing_page/LandingPage';
 import OpenCamera from './open_camera/OpenCamera';
-import './index.css'; // Asigură-te că ai importat CSS-ul de mai sus
+import TapeRecorder from './TapeRecorder/TapeRecorder'; // Presupun că aici e componenta finală
+import './index.css'; 
 
 const API_URL = 'http://localhost:5000'
 
 function App() {
+  // --- NOUTATE: Starea acum poate fi 'landing', 'camera', sau 'recorder' ---
+  const [currentPage, setCurrentPage] = useState('landing');
+
+  // (Restul codului pentru items poate rămâne, deși nu e folosit în UI acum)
   const [items, setItems] = useState([])
-  const [name, setName] = useState('')
-  const [gameStarted, setGameStarted] = useState(false);
-
-  useEffect(() => {
-    fetchItems()
-  }, [])
-
+  useEffect(() => { fetchItems() }, [])
   const fetchItems = async () => {
-    try {
-        const res = await axios.get(`${API_URL}/items`)
-        setItems(res.data)
-    } catch (error) {
-        console.error("Backend error:", error);
-    }
+    try { const res = await axios.get(`${API_URL}/items`); setItems(res.data) } 
+    catch (error) { console.error("Eroare backend:", error); }
   }
 
-  // Nu mai folosim "if (!gameStarted) return ...", ci returnăm ambele
+  /* App.jsx - Verificare */
+
+// ...
   return (
     <div className="app-container">
       
-      {/* 1. Landing Page (Layer 1) */}
-      <div className={`fade-page ${!gameStarted ? 'visible' : 'hidden'}`}>
-        <LandingPage onStart={() => setGameStarted(true)} />
+      {/* LANDING PAGE */}
+      <div className={`fade-layer ${currentPage === 'landing' ? 'visible' : 'hidden'}`}>
+        <LandingPage onStart={() => setCurrentPage('camera')} />
       </div>
 
-      {/* 2. Open Camera (Layer 2) */}
-      <div className={`fade-page ${gameStarted ? 'visible' : 'hidden'}`}>
-        <OpenCamera />
+      {/* CAMERA PAGE */}
+      {/* Verifică dacă ai scris 'camera' corect aici și în onStart-ul de mai sus */}
+      <div className={`fade-layer ${currentPage === 'camera' ? 'visible' : 'hidden'}`}>
+        {/* Folosim condiția && pentru a monta componenta doar când e nevoie */}
+        {currentPage === 'camera' && (
+           <OpenCamera onNext={() => setCurrentPage('recorder')} />
+        )}
+      </div>
+
+      {/* RECORDER PAGE */}
+      <div className={`fade-layer ${currentPage === 'recorder' ? 'visible' : 'hidden'}`}>
+        <TapeRecorder />
       </div>
 
     </div>
   )
+// ...
 }
 
 export default App

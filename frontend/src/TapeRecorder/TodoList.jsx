@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './TodoList.css';
+import notificationService from '../Notifications/NotificationService';
 
 const TodoList = ({ onClose }) => {
   const [todos, setTodos] = useState([]);
@@ -67,6 +68,12 @@ const TodoList = ({ onClose }) => {
       loadTodos();
       setPendingDelete(null);
     }
+  };
+
+  // Funcție pentru testarea notificării
+  const testNotification = (todo) => {
+    console.log('Test notificare pentru:', todo);
+    notificationService.testNotification(todo);
   };
 
   // Încărcăm TODO-urile la mount
@@ -201,6 +208,18 @@ const TodoList = ({ onClose }) => {
                     ))}
                   </div>
                 )}
+              </div>
+
+              {/* BUTON TEST NOTIFICARE */}
+              <div className="todo-actions">
+                <button 
+                  className="test-notification-btn"
+                  onClick={() => testNotification(todo)}
+                  title="Testează notificarea pentru acest task"
+                >
+                  <span className="bell-icon">🔔</span>
+                  <span className="test-label">TEST</span>
+                </button>
               </div>
             </div>
           ))

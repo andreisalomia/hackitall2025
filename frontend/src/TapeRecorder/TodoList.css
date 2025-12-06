@@ -265,6 +265,134 @@
   cursor: pointer;
 }
 
+/* Stiluri adiționale pentru TodoList - pentru butonul de test notificare */
+
+.todo-item {
+  position: relative;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.todo-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-left: auto;
+  padding-left: 10px;
+}
+
+.test-notification-btn {
+  background: transparent;
+  border: 2px solid #00ff00;
+  color: #00ff00;
+  padding: 6px 12px;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.2s;
+  white-space: nowrap;
+  min-width: 70px;
+  justify-content: center;
+}
+
+.test-notification-btn:hover {
+  background: #00ff00;
+  color: #000000;
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+  transform: translateY(-2px);
+}
+
+.test-notification-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 0 5px rgba(0, 255, 0, 0.3);
+}
+
+.bell-icon {
+  font-size: 14px;
+  animation: ring 2s ease-in-out infinite;
+}
+
+.test-notification-btn:hover .bell-icon {
+  animation: ring 0.5s ease-in-out infinite;
+}
+
+.test-label {
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+/* Animație pentru iconița de clopoțel */
+@keyframes ring {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  10%, 30% {
+    transform: rotate(-10deg);
+  }
+  20%, 40% {
+    transform: rotate(10deg);
+  }
+  50% {
+    transform: rotate(0deg);
+  }
+}
+
+/* Stiluri pentru prioritate ridicată */
+.priority-high .test-notification-btn {
+  border-color: #ff0000;
+  color: #ff0000;
+}
+
+.priority-high .test-notification-btn:hover {
+  background: #ff0000;
+  color: #000000;
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+}
+
+/* Stiluri pentru prioritate medie */
+.priority-medium .test-notification-btn {
+  border-color: #ffaa00;
+  color: #ffaa00;
+}
+
+.priority-medium .test-notification-btn:hover {
+  background: #ffaa00;
+  color: #000000;
+  box-shadow: 0 0 10px rgba(255, 170, 0, 0.5);
+}
+
+/* Stiluri pentru prioritate scăzută */
+.priority-low .test-notification-btn {
+  border-color: #00aaff;
+  color: #00aaff;
+}
+
+.priority-low .test-notification-btn:hover {
+  background: #00aaff;
+  color: #000000;
+  box-shadow: 0 0 10px rgba(0, 170, 255, 0.5);
+}
+
+/* Responsive - pe ecrane mici ascunde textul și păstrează doar iconița */
+@media (max-width: 768px) {
+  .test-label {
+    display: none;
+  }
+
+  .test-notification-btn {
+    min-width: auto;
+    padding: 6px 10px;
+  }
+
+  .bell-icon {
+    font-size: 16px;
+  }
+}
+
 .checkmark {
   display: block;
   width: 20px;

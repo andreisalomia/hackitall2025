@@ -44,6 +44,7 @@ const OpenCamera = ({ onNext }) => {
     <div className="desktop">
       {/* Chenar principal pentru OpenCamera */}
       <div className="welcome-content">
+        <h1 className="welcome-title-static">TIME CAPSULE 95</h1>
         {/* Wrapper pentru a suprapune video peste imagine */}
         <div className="monitor-wrapper">
           {/* 1. Imaginea de fundal a monitorului */}
@@ -68,7 +69,7 @@ const OpenCamera = ({ onNext }) => {
 
         <div className="camera-controls">
           {/* Butonul e activ doar dacă avem permisiune */}
-          <button className="next-btn" onClick={onNext} disabled={!hasPermission}>
+          <button className="start-button" onClick={onNext} disabled={!hasPermission}>
             ÎNREGISTREAZĂ
           </button>
         </div>

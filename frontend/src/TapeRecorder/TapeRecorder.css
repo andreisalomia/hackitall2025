@@ -80,3 +80,23 @@
   box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
   /* Added terminal window styling */
 }
+
+.blink-square {
+  width: 16px;
+  height: 16px;
+  background-color: red;
+  animation: blink 1s step-start infinite;
+  position: absolute;
+  z-index: 2; /* Să fie deasupra fundalului */
+  top: 83.7%;    /* Distanța de sus (ar trebui să fie identică cu stânga) */
+  right: 4.3%;  /* Distanța din dreapta */
+}
+
+@keyframes blink {
+  0%, 49% {
+    opacity: 1;
+  }
+  50%, 100% {
+    opacity: 0;
+  }
+}

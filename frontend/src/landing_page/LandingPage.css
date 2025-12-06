@@ -1,0 +1,77 @@
+/* frontend/src/landing_page/LandingPage.css */
+
+/* Importăm fontul retro direct aici pentru rapiditate */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+.landing-container {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Press Start 2P', cursive;
+
+  /* --- FUNDAL CAIET DE MATEMATICĂ (GRID) --- */
+  background-color: #f7f7f7;
+  background-image: 
+      linear-gradient(#d1d1d1 1px, transparent 1px),
+      linear-gradient(90deg, #d1d1d1 1px, transparent 1px);
+  background-size: 30px 30px; /* Mărimea pătrățelelor */
+}
+
+.app-title {
+  font-size: 3rem;
+  color: #2c3e50;
+  text-shadow: 4px 4px #ff0055; /* Umbră colorată */
+  margin-bottom: 3rem;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.button-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.press-text {
+  font-size: 0.8rem;
+  color: #555;
+  animation: blink 1s infinite;
+}
+
+.retro-btn {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 1.5rem;
+  padding: 20px 40px;
+  background-color: #ff0055;
+  color: white;
+  border: 4px solid black;
+  box-shadow: 8px 8px 0px black; /* Efectul 3D dur */
+  cursor: pointer;
+  transition: all 0.1s;
+}
+
+.retro-btn:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 6px 6px 0px black;
+}
+
+.retro-btn:active {
+  transform: translate(8px, 8px);
+  box-shadow: 0px 0px 0px black;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+/* Responsive simplu pentru mobil */
+@media (max-width: 600px) {
+  .app-title {
+    font-size: 2rem;
+    padding: 0 20px;
+  }
+}

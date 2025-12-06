@@ -239,7 +239,10 @@
 
         function stopTyping() {
             isTyping = false;
-            clearInterval(typingInterval);
+            if (typingInterval) {
+                clearInterval(typingInterval);
+                typingInterval = null;
+            }
             document.getElementById('cursor').style.display = 'none';
         }
 

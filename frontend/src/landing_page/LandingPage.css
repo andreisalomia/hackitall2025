@@ -71,7 +71,7 @@
   letter-spacing: 4px;
   font-family: "Courier New", monospace;
   width: 100%;
-  animation: typing 2s steps(20, end), blink 0.5s step-end infinite alternate;
+  /* animation: typing 2s steps(20, end), blink 0.5s step-end infinite alternate; */
   white-space: nowrap;
   overflow: hidden;
   border-right: 3px solid #00ff00;

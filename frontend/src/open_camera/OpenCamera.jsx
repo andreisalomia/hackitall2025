@@ -66,10 +66,12 @@ const OpenCamera = ({ onNext }) => {
           
           {!hasPermission && <div className="error-message">Te rugăm să permiți accesul la cameră.</div>}
         </div>
-
+        <p className="finding-user">Finding user...</p>
+        <p className="auth">Authenticating...</p>
+        <p className="complete">Complete!</p>
         <div className="camera-controls">
           {/* Butonul e activ doar dacă avem permisiune */}
-          <button className="start-button" onClick={onNext} disabled={!hasPermission}>
+          <button className="continue-button" onClick={onNext} disabled={!hasPermission}>
             ÎNREGISTREAZĂ
           </button>
         </div>

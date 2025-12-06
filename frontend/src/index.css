@@ -1,0 +1,37 @@
+/* Containerul principal care ține ambele pagini */
+.app-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background-color: #282c34; /* Sau culoarea ta de fundal */
+  overflow: hidden;
+}
+
+/* Clasa comună pentru ambele ecrane (Landing și Camera) */
+.fade-page {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: opacity 1s ease-in-out; /* Durata tranziției: 1 secundă */
+  
+  /* Centrare conținut (opțional, dar recomandat) */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Starea vizibilă */
+.fade-page.visible {
+  opacity: 1;
+  pointer-events: auto; /* Permite click-uri */
+  z-index: 2;
+}
+
+/* Starea invizibilă */
+.fade-page.hidden {
+  opacity: 0;
+  pointer-events: none; /* Blochează click-urile pe elementul ascuns */
+  z-index: 1;
+}

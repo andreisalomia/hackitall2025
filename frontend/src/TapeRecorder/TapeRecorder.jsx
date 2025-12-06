@@ -12,32 +12,66 @@ export default function TapeRecorder() {
   const [statusMessage, setStatusMessage] = useState('');
   const [showTodoList, setShowTodoList] = useState(false);
   const [showTerminalPopup, setShowTerminalPopup] = useState(false);
+  const [terminalText, setTerminalText] = useState('');
+  const [isLoadingSummary, setIsLoadingSummary] = useState(false);
   
   const mediaRecorderRef = useRef(null);
   const chunksRef = useRef([]);
 
-  const terminalText = `> INITIALIZING DAILY SUMMARY SYSTEM...
+  // Funcție pentru încărcarea rezumatului zilnic
+  const loadDailySummary = async () => {
+    setIsLoadingSummary(true);
+    
+    try {
+      const today = new Date().toISOString().split('T')[0];
+      const response = await fetch(`http://localhost:5000/journal/summary?date=${today}`);
+      const data = await response.json();
+      
+      if (data.success) {
+        const currentDate = new Date().toLocaleDateString('ro-RO', { 
+          weekday: 'long', 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric' 
+        });
+        
+        const text = `> INITIALIZING DAILY SUMMARY SYSTEM...
 > LOADING JOURNAL ENTRIES...
+> CONNECTED TO DATABASE
 > STATUS: OK
 
-REZUMATUL ZILEI
-==========================
+╔════════════════════════════════════════════════════╗
+    REZUMATUL ZILEI - ${currentDate.toUpperCase()}
+╚════════════════════════════════════════════════════╝
 
-Aceasta este o previzualizare a terminalului pentru rezumatul zilei.
+${data.summary}
 
-În curând aici va apărea rezumatul generat automat pe baza 
-intrărilor tale din jurnal.
+────────────────────────────────────────────────
 
-Terminalul include:
-- Efect de typewriter
-- Sunete retro de tastare
-- Design stil Windows 95
+Intrări analizate: ${data.entries_count || 0}
 
-Apasă OK pentru a închide terminalul.`;
+════════════════════════════════════════════════`;
+        
+        setTerminalText(text);
+      } else {
+        setTerminalText(`> EROARE: ${data.error || 'Nu s-a putut încărca rezumatul'}`);
+      }
+    } catch (error) {
+      console.error('Eroare la încărcarea rezumatului:', error);
+      setTerminalText(`> EROARE DE CONEXIUNE
+> Nu s-a putut contacta serverul
+> Verifică dacă backend-ul este pornit
+
+Detalii tehnice: ${error.message}`);
+    } finally {
+      setIsLoadingSummary(false);
+    }
+  };
 
   // Funcție pentru deschiderea popup-ului terminal
-  const handleOpenDailySummary = () => {
+  const handleOpenDailySummary = async () => {
     setShowTerminalPopup(true);
+    await loadDailySummary();
   };
 
   // Funcție pentru închiderea popup-ului terminal
@@ -279,8 +313,9 @@ Apasă OK pentru a închide terminalul.`;
               <button 
                 className="mx-btn summary"
                 onClick={handleOpenDailySummary}
+                disabled={isLoadingSummary}
               >
-                REZUMATUL ZILEI
+                {isLoadingSummary ? 'LOADING...' : 'REZUMATUL ZILEI'}
               </button>
 
               <button 
@@ -354,7 +389,7 @@ Apasă OK pentru a închide terminalul.`;
         isOpen={showTerminalPopup}
         onClose={handleCloseTerminalPopup}
         text={terminalText}
-        speed={50}
+        speed={30}
       />
     </div>
   );

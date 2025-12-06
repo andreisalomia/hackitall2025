@@ -72,7 +72,7 @@ const OpenCamera = ({ onNext }) => {
         <div className="camera-controls">
           {/* Butonul e activ doar dacă avem permisiune */}
           <button className="continue-button" onClick={onNext} disabled={!hasPermission}>
-            ÎNREGISTREAZĂ
+            MERGI MAI DEPARTE
           </button>
         </div>
       </div>

@@ -75,12 +75,12 @@
 }
 
 .reel-left {
-  top: -12%;
+  top: 2%;
   left: -11%;
 }
 
 .reel-right {
-  top: -12%;
+  top: 2%;
   right: -11%;
 }
 
@@ -99,7 +99,7 @@
   height: 21px;
   background: red;
   position: absolute;
-  bottom: 12.2%;
+  bottom: 13.9%;
   right: 4.5%;
   animation: blink 1s steps(1) infinite;
 }
@@ -259,6 +259,11 @@
 
 /* Ajustări pentru butonul TODO */
 .mx-btn.todo {
+  font-size: 11px;
+  transition: all 0.3s ease;
+}
+
+.mx-btn.statistics {
   font-size: 11px;
   transition: all 0.3s ease;
 }

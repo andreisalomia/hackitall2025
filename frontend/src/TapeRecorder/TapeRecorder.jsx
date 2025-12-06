@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import './TapeRecorder.css';
+import TodoList from './TodoList';
 
 import tapeBody from './tape2_pixel_modif.png';
 import singleReel from './rola_pixel.png';
@@ -8,6 +9,7 @@ export default function TapeRecorder() {
   const [isRecording, setIsRecording] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [statusMessage, setStatusMessage] = useState('');
+  const [showTodoList, setShowTodoList] = useState(false);
   
   const mediaRecorderRef = useRef(null);
   const chunksRef = useRef([]);
@@ -179,6 +181,11 @@ export default function TapeRecorder() {
         console.log('ID salvat:', result.saved_id);
         console.log('========================');
         
+        // Dacă e TODO și lista e vizibilă, trigger refresh
+        if (result.classification?.type === 'TODO' && showTodoList) {
+          window.dispatchEvent(new Event('todoAdded'));
+        }
+        
         // Reset dupa 3 secunde
         setTimeout(() => {
           setStatusMessage('');
@@ -242,8 +249,11 @@ export default function TapeRecorder() {
                 REZUMATUL ZILEI
               </button>
 
-              <button className="mx-btn todo">
-                TODO'S
+              <button 
+                className="mx-btn todo"
+                onClick={() => setShowTodoList(!showTodoList)}
+              >
+                {showTodoList ? 'ASCUNDE TODO\'S' : 'TODO\'S'}
               </button>
             </div>
           </div>
@@ -256,47 +266,52 @@ export default function TapeRecorder() {
           )}
         </div>
 
+        {/* INSTRUCTIUNI SAU TODO LIST */}
         <div className="instructions-frame">
-          <div className="instructions-panel">
-            <div className="instructions-header">
-              CE SA SPUI
-            </div>
-            
-            <div className="instructions-content">
-              <div className="instruction-section">
-                <div className="instruction-title">NOTITE PERSONALE:</div>
-                <div className="instruction-text">
-                  "Astazi am fost la piata"
-                </div>
-                <div className="instruction-text">
-                  "Mi-am amintit de o intamplare"
-                </div>
-                <div className="instruction-text">
-                  "M-am simtit obosit"
-                </div>
+          {!showTodoList ? (
+            <div className="instructions-panel">
+              <div className="instructions-header">
+                CE SA SPUI
               </div>
+              
+              <div className="instructions-content">
+                <div className="instruction-section">
+                  <div className="instruction-title">NOTITE PERSONALE:</div>
+                  <div className="instruction-text">
+                    "Astazi am fost la piata"
+                  </div>
+                  <div className="instruction-text">
+                    "Mi-am amintit de o intamplare"
+                  </div>
+                  <div className="instruction-text">
+                    "M-am simtit obosit"
+                  </div>
+                </div>
 
-              <div className="instruction-section">
-                <div className="instruction-title">LUCRURI DE FACUT:</div>
-                <div className="instruction-text">
-                  "Trebuie sa iau pastilele <strong>maine dimineata la 9</strong>"
+                <div className="instruction-section">
+                  <div className="instruction-title">LUCRURI DE FACUT:</div>
+                  <div className="instruction-text">
+                    "Trebuie sa iau pastilele <strong>maine dimineata la 9</strong>"
+                  </div>
+                  <div className="instruction-text">
+                    "Nu uita sa suni la doctor <strong>vineri</strong>"
+                  </div>
+                  <div className="instruction-text">
+                    "Plata factura <strong>pana pe 15</strong>"
+                  </div>
                 </div>
-                <div className="instruction-text">
-                  "Nu uita sa suni la doctor <strong>vineri</strong>"
-                </div>
-                <div className="instruction-text">
-                  "Plata factura <strong>pana pe 15</strong>"
-                </div>
-              </div>
 
-              <div className="instruction-tips">
-                <div className="tip-title">IMPORTANT:</div>
-                <div className="tip-item">• Spune cand (azi, maine, luni)</div>
-                <div className="tip-item">• Spune ora (dimineata, la 3)</div>
-                <div className="tip-item">• Vorbeste natural si clar</div>
+                <div className="instruction-tips">
+                  <div className="tip-title">IMPORTANT:</div>
+                  <div className="tip-item">• Spune cand (azi, maine, luni)</div>
+                  <div className="tip-item">• Spune ora (dimineata, la 3)</div>
+                  <div className="tip-item">• Vorbeste natural si clar</div>
+                </div>
               </div>
             </div>
-          </div>
+          ) : (
+            <TodoList onClose={() => setShowTodoList(false)} />
+          )}
         </div>
       </div>
     </div>

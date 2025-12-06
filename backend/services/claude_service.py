@@ -421,9 +421,8 @@ Rezumatul trebuie sa:
 - Fie pozitiv, suportiv si empatic
 - Fie structurat in 3 paragrafe:
   1. Rezumat activitati principale
-  2. Observatii despre starea emotionala
-  3. Incurajare si perspective pozitive
-- Aiba maxim 200 cuvinte
+  2. Incurajare si recunoastere a eforturilor
+- Aiba maxim 100 de cuvinte
 - Evidentieze momentele importante si realizarile
 - Foloseasca un ton familiar si calduros
 
@@ -434,8 +433,8 @@ Rezumat al zilei:"""
 
         try:
             message = self.client.messages.create(
-                model="claude-haiku-4-20250514",
-                max_tokens=600,
+                model="claude-sonnet-4-20250514",
+                max_tokens=300,
                 messages=[
                     {"role": "user", "content": prompt}
                 ]

@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import './TapeRecorder.css';
 import TodoList from './TodoList';
+import { TerminalPopup } from '../terminal_vechi_cu_sunet';
 
 import tapeBody from './tape2_pixel_modif.png';
 import singleReel from './rola_pixel.png';
@@ -10,9 +11,39 @@ export default function TapeRecorder() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [statusMessage, setStatusMessage] = useState('');
   const [showTodoList, setShowTodoList] = useState(false);
+  const [showTerminalPopup, setShowTerminalPopup] = useState(false);
   
   const mediaRecorderRef = useRef(null);
   const chunksRef = useRef([]);
+
+  const terminalText = `> INITIALIZING DAILY SUMMARY SYSTEM...
+> LOADING JOURNAL ENTRIES...
+> STATUS: OK
+
+REZUMATUL ZILEI
+==========================
+
+Aceasta este o previzualizare a terminalului pentru rezumatul zilei.
+
+În curând aici va apărea rezumatul generat automat pe baza 
+intrărilor tale din jurnal.
+
+Terminalul include:
+- Efect de typewriter
+- Sunete retro de tastare
+- Design stil Windows 95
+
+Apasă OK pentru a închide terminalul.`;
+
+  // Funcție pentru deschiderea popup-ului terminal
+  const handleOpenDailySummary = () => {
+    setShowTerminalPopup(true);
+  };
+
+  // Funcție pentru închiderea popup-ului terminal
+  const handleCloseTerminalPopup = () => {
+    setShowTerminalPopup(false);
+  };
 
   // Functie pentru convertirea audio la WAV
   const encodeWAV = (audioBuffer) => {
@@ -245,7 +276,10 @@ export default function TapeRecorder() {
                 STOP
               </button>
 
-              <button className="mx-btn summary">
+              <button 
+                className="mx-btn summary"
+                onClick={handleOpenDailySummary}
+              >
                 REZUMATUL ZILEI
               </button>
 
@@ -314,6 +348,14 @@ export default function TapeRecorder() {
           )}
         </div>
       </div>
+
+      {/* TERMINAL POPUP */}
+      <TerminalPopup
+        isOpen={showTerminalPopup}
+        onClose={handleCloseTerminalPopup}
+        text={terminalText}
+        speed={50}
+      />
     </div>
   );
 }

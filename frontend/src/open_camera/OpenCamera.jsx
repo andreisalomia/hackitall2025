@@ -41,37 +41,38 @@ const OpenCamera = ({ onNext }) => {
   }, []); // [] înseamnă că se execută doar o dată, la montarea componentei
 
   return (
-    <div className="open-camera-container">
-      
-      {/* Wrapper pentru a suprapune video peste imagine */}
-      <div className="monitor-wrapper">
-        {/* 1. Imaginea de fundal a monitorului */}
-        <img 
-          src={monitorImage} 
-          alt="Monitor Frame" 
-          className="monitor-frame" 
-        />
-        
-        {/* 2. Elementul video care arată camera web */}
-        {/* playsInline, muted, autoPlay sunt necesare pentru a porni automat */}
-        <video 
-          ref={videoRef}
-          className="webcam-feed"
-          playsInline 
-          muted 
-          autoPlay 
-        />
-        
-        {!hasPermission && <div className="error-message">Te rugăm să permiți accesul la cameră.</div>}
-      </div>
+    <div className="desktop">
+      {/* Chenar principal pentru OpenCamera */}
+      <div className="welcome-content">
+        {/* Wrapper pentru a suprapune video peste imagine */}
+        <div className="monitor-wrapper">
+          {/* 1. Imaginea de fundal a monitorului */}
+          <img 
+            src={monitorImage} 
+            alt="Monitor Frame" 
+            className="monitor-frame" 
+          />
+          
+          {/* 2. Elementul video care arată camera web */}
+          {/* playsInline, muted, autoPlay sunt necesare pentru a porni automat */}
+          <video 
+            ref={videoRef}
+            className="webcam-feed"
+            playsInline 
+            muted 
+            autoPlay 
+          />
+          
+          {!hasPermission && <div className="error-message">Te rugăm să permiți accesul la cameră.</div>}
+        </div>
 
-      <div className="camera-controls">
-        {/* Butonul e activ doar dacă avem permisiune */}
-        <button className="next-btn" onClick={onNext} disabled={!hasPermission}>
-          ÎNREGISTREAZĂ
-        </button>
+        <div className="camera-controls">
+          {/* Butonul e activ doar dacă avem permisiune */}
+          <button className="next-btn" onClick={onNext} disabled={!hasPermission}>
+            ÎNREGISTREAZĂ
+          </button>
+        </div>
       </div>
-
     </div>
   );
 };

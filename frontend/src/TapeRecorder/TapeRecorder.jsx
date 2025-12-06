@@ -28,8 +28,9 @@ const TapeRecorder = ({ onClick }) => {
       <img 
         src={singleReel} 
         alt="Spinning Reel Right" 
-        className="reel reel-right" 
+        className="reel reel-right"
       />
+      <div className="blink-square"></div>
       
     </div>
   );

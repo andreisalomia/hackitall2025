@@ -178,6 +178,37 @@
   /* Added terminal window styling */
 }
 
+.start-button {
+  background: #000000;
+  border: 3px solid #00ff00;
+  color: #00ff00;
+  font-size: 24px;
+  font-weight: bold;
+  padding: 16px 48px;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.5), inset 0 0 10px rgba(0, 255, 0, 0.2);
+  /* transition: all 0.2s; */
+  position: relative;
+  font-family: "Courier New", monospace;
+  letter-spacing: 4px;
+  margin-top: 24px;
+  text-transform: uppercase;
+}
+
+.welcome-title-static {
+  font-size: 36px;
+  font-weight: bold;
+  color: #00ff00;
+  text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+  letter-spacing: 4px;
+  font-family: "Courier New", monospace;
+  width: 100%;
+  text-align: center; /* Center the text */
+  /* animation: typing 2s steps(20, end), blink 0.5s step-end infinite alternate; */
+  white-space: nowrap;
+  overflow: hidden;
+}
+
 @keyframes blink {
   50% { opacity: 0; }
 }

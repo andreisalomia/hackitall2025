@@ -289,6 +289,12 @@ Apasă OK pentru a închide terminalul.`;
               >
                 {showTodoList ? 'ASCUNDE TODO\'S' : 'TODO\'S'}
               </button>
+
+              <button 
+                className="mx-btn statistics"
+              >
+                STATISTICI
+              </button>
             </div>
           </div>
 

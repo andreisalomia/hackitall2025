@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terminal Popup - NES.css</title>
+    
+    <!-- NES.css -->
+    <link href="https://unpkg.com/nes.css@latest/css/nes.min.css" rel="stylesheet" />
+    
+    <!-- Google Font for NES.css -->
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #212529;
+            font-family: 'Press Start 2P', cursive;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .terminal-popup {
+            position: relative;
+            width: 90%;
+            max-width: 800px;
+            background: #000;
+            border: 4px solid #00ff00;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5),
+                        inset 0 0 20px rgba(0, 255, 0, 0.1);
+            padding: 0;
+            animation: scanlines 8s linear infinite;
+        }
+
+        .terminal-header {
+            background: #1a1a1a;
+            border-bottom: 2px solid #00ff00;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .terminal-title {
+            color: #00ff00;
+            font-size: 12px;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.8);
+        }
+
+        .terminal-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .terminal-btn {
+            width: 16px;
+            height: 16px;
+            border: 2px solid #00ff00;
+            cursor: pointer;
+            background: #000;
+        }
+
+        .terminal-btn.close:hover {
+            background: #ff0000;
+            border-color: #ff0000;
+        }
+
+        .terminal-body {
+            padding: 20px;
+            min-height: 300px;
+            color: #00ff00;
+            font-size: 14px;
+            line-height: 1.8;
+            font-family: 'Courier New', monospace;
+            overflow-y: auto;
+            max-height: 400px;
+        }
+
+        .terminal-prompt {
+            color: #00ff00;
+            text-shadow: 0 0 5px rgba(0, 255, 0, 0.8);
+            margin-bottom: 15px;
+        }
+
+        .terminal-text {
+            color: #00ff00;
+            text-shadow: 0 0 3px rgba(0, 255, 0, 0.6);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .terminal-cursor {
+            display: inline-block;
+            width: 10px;
+            height: 18px;
+            background: #00ff00;
+            animation: blink 1s infinite;
+            margin-left: 2px;
+            box-shadow: 0 0 5px rgba(0, 255, 0, 0.8);
+        }
+
+        @keyframes blink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+
+        @keyframes scanlines {
+            0% {
+                background-position: 0 0;
+            }
+            100% {
+                background-position: 0 100%;
+            }
+        }
+
+        .controls {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .nes-btn {
+            margin: 5px;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="terminal-popup" id="terminalPopup">
+            <div class="terminal-header">
+                <div class="terminal-title">C:\TIMECAPSULE95></div>
+                <div class="terminal-buttons">
+                    <div class="terminal-btn" onclick="minimizeTerminal()"></div>
+                    <div class="terminal-btn" onclick="maximizeTerminal()"></div>
+                    <div class="terminal-btn close" onclick="closeTerminal()"></div>
+                </div>
+            </div>
+            <div class="terminal-body">
+                <div class="terminal-prompt">System Boot Sequence...</div>
+                <div class="terminal-text" id="terminalContent"></div>
+                <span class="terminal-cursor" id="cursor"></span>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button type="button" class="nes-btn is-success" onclick="startTyping()">Start Typing</button>
+            <button type="button" class="nes-btn is-warning" onclick="resetTerminal()">Reset</button>
+            <button type="button" class="nes-btn is-error" onclick="closeTerminal()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        const texts = [
+            "Initializing TIME CAPSULE 95...",
+            "Loading memory archives...",
+            "Scanning temporal database...",
+            "",
+            "> System Status: ONLINE",
+            "> Memory Units: 4,096 KB",
+            "> Time Displacement: READY",
+            "",
+            "Welcome to TIME CAPSULE 95",
+            "Your memories are safe with us.",
+            "",
+            "Press START to begin your journey..."
+        ];
+
+        let currentTextIndex = 0;
+        let currentCharIndex = 0;
+        let isTyping = false;
+        let typingInterval;
+
+        // Audio context for typing sound
+        let audioContext;
+        
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playTypeSound() {
+            initAudio();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = 800;
+            oscillator.type = 'square';
+            
+            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.05);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.05);
+        }
+
+        function typeText() {
+            if (currentTextIndex >= texts.length) {
+                stopTyping();
+                return;
+            }
+
+            const currentText = texts[currentTextIndex];
+            const terminalContent = document.getElementById('terminalContent');
+
+            if (currentCharIndex < currentText.length) {
+                terminalContent.textContent += currentText[currentCharIndex];
+                playTypeSound();
+                currentCharIndex++;
+            } else {
+                terminalContent.textContent += '\n';
+                currentTextIndex++;
+                currentCharIndex = 0;
+            }
+        }
+
+        function startTyping() {
+            if (isTyping) return;
+            
+            initAudio();
+            isTyping = true;
+            document.getElementById('cursor').style.display = 'inline-block';
+            
+            typingInterval = setInterval(typeText, 50);
+        }
+
+        function stopTyping() {
+            isTyping = false;
+            clearInterval(typingInterval);
+            document.getElementById('cursor').style.display = 'none';
+        }
+
+        function resetTerminal() {
+            stopTyping();
+            currentTextIndex = 0;
+            currentCharIndex = 0;
+            document.getElementById('terminalContent').textContent = '';
+            document.getElementById('cursor').style.display = 'inline-block';
+        }
+
+        function closeTerminal() {
+            const popup = document.getElementById('terminalPopup');
+            popup.style.display = 'none';
+            setTimeout(() => {
+                popup.style.display = 'block';
+            }, 2000);
+        }
+
+        function minimizeTerminal() {
+            const popup = document.getElementById('terminalPopup');
+            popup.style.transform = 'scale(0.8)';
+            popup.style.opacity = '0.5';
+            setTimeout(() => {
+                popup.style.transform = 'scale(1)';
+                popup.style.opacity = '1';
+            }, 500);
+        }
+
+        function maximizeTerminal() {
+            const popup = document.getElementById('terminalPopup');
+            popup.style.transform = 'scale(1.05)';
+            setTimeout(() => {
+                popup.style.transform = 'scale(1)';
+            }, 200);
+        }
+
+        // Auto-start typing after 1 second
+        window.addEventListener('load', () => {
+            setTimeout(startTyping, 1000);
+        });
+    </script>
+</body>
+</html>

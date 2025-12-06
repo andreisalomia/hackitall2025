@@ -24,7 +24,7 @@
 /* LAYOUT ORIZONTAL */
 .matrix-layout {
   display: flex;
-  flex-direction: row;   /* <— AICI DEVINE ORIZONTAL */
+  flex-direction: row;
   gap: 100px;
   align-items: center;
 }
@@ -32,7 +32,7 @@
 /* CASETOFON */
 .tape-wrapper {
   position: relative;
-  width: 520px; /* casetofon mai clar */
+  width: 520px;
   image-rendering: pixelated;
 }
 
@@ -40,7 +40,7 @@
   width: 100%;
 }
 
-/* RULE — repoziționate corect după imagine */
+/* RULE */
 .reel {
   position: absolute;
   width: 60%;
@@ -49,7 +49,6 @@
   z-index: 2;
 }
 
-/* Ajustate manual pentru a sta FIX pe imaginea ta */
 .reel-left {
   top: -12%;
   left: -11%;
@@ -104,9 +103,14 @@
   transition: 0.2s;
 }
 
-.mx-btn:hover {
+.mx-btn:hover:not(:disabled) {
   background: #003300;
   box-shadow: 0 0 15px #00ff00;
+}
+
+.mx-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 /* Culori speciale RECORD / STOP */
@@ -115,7 +119,38 @@
   color: red;
 }
 
+.mx-btn.record:hover:not(:disabled) {
+  background: #330000;
+  box-shadow: 0 0 15px red;
+}
+
 .mx-btn.stop {
   border-color: orange;
   color: orange;
+}
+
+.mx-btn.stop:hover:not(:disabled) {
+  background: #332200;
+  box-shadow: 0 0 15px orange;
+}
+
+/* STATUS MESSAGE */
+.status-message {
+  margin-top: 30px;
+  padding: 15px 20px;
+  text-align: center;
+  font-size: 11px;
+  color: #00ff00;
+  border: 2px solid #00ff00;
+  background: rgba(0, 50, 0, 0.5);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { 
+    box-shadow: 0 0 10px #00ff00;
+  }
+  50% { 
+    box-shadow: 0 0 20px #00ff00;
+  }
 }

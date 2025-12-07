@@ -1,0 +1,176 @@
+/* --- BARA ÎN AFARA CHENARULUI --- */
+.progress-bar-container {
+  position: relative;
+  left: -800px;
+  top: 50%;                /* CENTRATĂ VERTICAL */
+  transform: translateY(-50%);
+  z-index: 9999;
+  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 80px;
+  height: 500px;
+  padding: 20px 10px;
+
+  border: 3px solid #00ff00;
+  background: rgba(0, 30, 0, 0.7);
+  box-shadow: 0 0 20px rgba(0, 255, 0, 0.4);
+  gap: 15px;
+}
+
+/* Header */
+.progress-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.progress-title {
+  font-size: 10px;
+  color: #00ff00;
+  font-family: 'Press Start 2P', monospace;
+  letter-spacing: 1px;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+}
+
+.progress-date {
+  font-size: 8px;
+  color: #00cc00;
+  font-family: 'Press Start 2P', monospace;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+}
+
+/* Bara de progres */
+.progress-bar-wrapper {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.progress-bar-track {
+  position: relative;
+  width: 30px;
+  height: 100%;
+  background: rgba(0, 50, 0, 0.5);
+  border: 2px solid #00ff00;
+  box-shadow:
+    inset 0 0 10px rgba(0, 255, 0, 0.3),
+    0 0 10px rgba(0, 255, 0, 0.2);
+}
+
+.progress-bar-fill {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: linear-gradient(
+    to top,
+    #00ff00 0%,
+    #00ff00 50%,
+    #00cc00 100%
+  );
+  transition: height 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow:
+    0 0 15px rgba(0, 255, 0, 0.6),
+    inset 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+/* Glow animat */
+.progress-bar-glow {
+  position: absolute;
+  top: -5px;
+  left: -2px;
+  right: -2px;
+  height: 10px;
+  background: rgba(0, 255, 0, 0.8);
+  filter: blur(5px);
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scaleY(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scaleY(1.2);
+  }
+}
+
+/* Markeri */
+.progress-marker {
+  position: absolute;
+  left: -8px;
+  width: 100%;
+  height: 1px;
+  display: flex;
+  align-items: center;
+}
+
+.marker-line {
+  display: block;
+  width: 8px;
+  height: 1px;
+  background: #00ff00;
+  opacity: 0.5;
+}
+
+/* Statistici */
+.progress-stats {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding-top: 10px;
+  border-top: 2px solid #00ff00;
+  width: 100%;
+}
+
+.progress-percentage {
+  font-size: 18px;
+  color: #00ff00;
+  font-family: 'Press Start 2P', monospace;
+  font-weight: bold;
+  text-shadow: 0 0 10px #00ff00;
+}
+
+.progress-count {
+  font-size: 10px;
+  color: #00cc00;
+  font-family: 'Press Start 2P', monospace;
+}
+
+.progress-label {
+  font-size: 7px;
+  color: #009900;
+  font-family: 'Press Start 2P', monospace;
+  letter-spacing: 1px;
+}
+
+/* Loading */
+.progress-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  font-size: 20px;
+  color: #00ff00;
+}
+
+.blink {
+  animation: blink-animation 1s steps(1) infinite;
+}
+
+@keyframes blink-animation {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}

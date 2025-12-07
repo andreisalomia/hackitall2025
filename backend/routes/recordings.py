@@ -452,3 +452,75 @@ def get_weekly_insights():
         
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@recordings_bp.route('/todos/daily-progress', methods=['GET'])
+def get_daily_progress():
+    """
+    Calculează progresul task-urilor pentru o zi specifică
+    Query params: date (YYYY-MM-DD) - default: azi
+    """
+    try:
+        target_date = request.args.get('date', datetime.utcnow().strftime("%Y-%m-%d"))
+        
+        # Parse target date
+        date_obj = datetime.strptime(target_date, "%Y-%m-%d")
+        start_of_day = date_obj.replace(hour=0, minute=0, second=0, microsecond=0)
+        end_of_day = date_obj.replace(hour=23, minute=59, second=59, microsecond=999999)
+        
+        # Găsim toate task-urile cu due_datetime în ziua respectivă
+        query = {
+            "due_datetime": {
+                "$gte": start_of_day,
+                "$lte": end_of_day
+            }
+        }
+        
+        all_todos = list(db.todos.find(query))
+        
+        total_tasks = len(all_todos)
+        completed_tasks = len([t for t in all_todos if t.get("completed", False)])
+        pending_tasks = total_tasks - completed_tasks
+        
+        completion_percentage = 0
+        if total_tasks > 0:
+            completion_percentage = round((completed_tasks / total_tasks) * 100, 1)
+        
+        return jsonify({
+            "success": True,
+            "date": target_date,
+            "total": total_tasks,
+            "completed": completed_tasks,
+            "pending": pending_tasks,
+            "completion_percentage": completion_percentage
+        }), 200
+        
+    except ValueError as e:
+        return jsonify({"error": f"Format dată invalid: {str(e)}"}), 400
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@recordings_bp.route('/todos/<todo_id>/uncomplete', methods=['PUT'])
+def uncomplete_todo(todo_id):
+    """
+    Marchează un TODO ca necompletat (pentru UNDO)
+    """
+    try:
+        result = db.todos.update_one(
+            {"_id": ObjectId(todo_id)},
+            {
+                "$set": {"completed": False},
+                "$unset": {"completed_at": ""}
+            }
+        )
+        
+        if result.matched_count == 0:
+            return jsonify({"error": "TODO-ul nu a fost gasit"}), 404
+        
+        return jsonify({
+            "success": True,
+            "message": "TODO restaurat cu succes"
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

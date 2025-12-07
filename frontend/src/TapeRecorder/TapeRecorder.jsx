@@ -3,6 +3,7 @@ import './TapeRecorder.css';
 import TodoList from './TodoList';
 import { TerminalPopup } from '../terminal_vechi_cu_sunet';
 import TaskNotificationsContainer from '../Notifications/TaskNotificationsContainer';
+import DailyProgressBar from './DailyProgressBar';
 
 import tapeBody from './tape2_pixel_modif.png';
 import singleReel from './rola_pixel.png';
@@ -283,6 +284,8 @@ ${r.pending_list.length === 0 ? "• Niciun task" :
           window.dispatchEvent(new Event('todoAdded'));
         }
 
+          window.dispatchEvent(new Event('todoAdded'));
+
         setTimeout(() => {
           setStatusMessage('');
           setIsProcessing(false);
@@ -315,6 +318,8 @@ ${r.pending_list.length === 0 ? "• Niciun task" :
               <img src={singleReel} className={`reel reel-right ${isRecording ? 'spin' : ''}`} alt="Right Reel" />
               {isRecording && <div className="blink-square"></div>}
             </div>
+
+              <DailyProgressBar />
 
             {/* BUTOANE */}
             <div className="matrix-buttons">

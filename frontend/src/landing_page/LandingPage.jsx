@@ -39,7 +39,7 @@ function LandingPage({ onStart }) {
             <img src="/computer-icon.png" alt="Computer" className="welcome-icon" />
             <h1 className="welcome-title">RetroMind</h1>
             <p className="welcome-subtitle">&gt; Pastreaza amintirile pentru viitor...</p>
-            <p className="welcome-subtitle">&gt; Sistema de arhivare memorie v1.0</p>
+            <p className="welcome-subtitle">&gt; Sistem de arhivare memorie v1.0</p>
             <p className="welcome-subtitle">&gt; Press START to initialize</p>
             <button className="start-button" onClick={onStart}>
               START

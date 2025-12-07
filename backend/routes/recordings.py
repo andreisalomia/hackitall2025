@@ -23,13 +23,13 @@ def upload_recording():
         
         try:
             transcription = speech_service.transcribe_audio(audio_file)
-            print(f"📝 Transcription: {transcription}")
+            print(f"Transcription: {transcription}")
         except Exception as e:
             return jsonify({"error": f"Eroare la transcriere: {str(e)}"}), 500
         
         try:
             classification = claude_service.classify_and_extract(transcription)
-            print(f"🤖 Classification: {classification}")
+            print(f"Classification: {classification}")
         except Exception as e:
             return jsonify({"error": f"Eroare la clasificare: {str(e)}"}), 500
         
@@ -52,7 +52,7 @@ def upload_recording():
         }), 200
         
     except Exception as e:
-        print(f"❌ Error in upload_recording: {e}")
+        print(f"Error in upload_recording: {e}")
         return jsonify({"error": str(e)}), 500
 
 
@@ -259,7 +259,7 @@ def get_weekly_todo_report():
         if not todos:
             return jsonify({
                 "success": True,
-                "report": "Nu există suficiente date pentru raport."
+                "report": "Nu exista suficiente date pentru raport."
             }), 200
 
         completed = [t for t in todos if t.get("completed")]
@@ -456,18 +456,16 @@ def get_weekly_insights():
 @recordings_bp.route('/todos/daily-progress', methods=['GET'])
 def get_daily_progress():
     """
-    Calculează progresul task-urilor pentru o zi specifică
+    Calculeaza progresul task-urilor pentru o zi specifica
     Query params: date (YYYY-MM-DD) - default: azi
     """
     try:
         target_date = request.args.get('date', datetime.utcnow().strftime("%Y-%m-%d"))
         
-        # Parse target date
         date_obj = datetime.strptime(target_date, "%Y-%m-%d")
         start_of_day = date_obj.replace(hour=0, minute=0, second=0, microsecond=0)
         end_of_day = date_obj.replace(hour=23, minute=59, second=59, microsecond=999999)
         
-        # Găsim toate task-urile cu due_datetime în ziua respectivă
         query = {
             "due_datetime": {
                 "$gte": start_of_day,
@@ -495,7 +493,7 @@ def get_daily_progress():
         }), 200
         
     except ValueError as e:
-        return jsonify({"error": f"Format dată invalid: {str(e)}"}), 400
+        return jsonify({"error": f"Format data invalid: {str(e)}"}), 400
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -503,7 +501,7 @@ def get_daily_progress():
 @recordings_bp.route('/todos/<todo_id>/uncomplete', methods=['PUT'])
 def uncomplete_todo(todo_id):
     """
-    Marchează un TODO ca necompletat (pentru UNDO)
+    Marcheaza un TODO ca necompletat (pentru UNDO)
     """
     try:
         result = db.todos.update_one(

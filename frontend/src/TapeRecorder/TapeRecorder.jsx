@@ -18,7 +18,6 @@ export default function TapeRecorder() {
   const [terminalText, setTerminalText] = useState('');
   const [isLoadingSummary, setIsLoadingSummary] = useState(false);
 
-  // 🔥 STATE PENTRU STATISTICI
   const [showStatsPopup, setShowStatsPopup] = useState(false);
   const [statsText, setStatsText] = useState('');
   const [isLoadingStats, setIsLoadingStats] = useState(false);
@@ -56,13 +55,13 @@ ${data.summary}
 
 ────────────────────────────────────────────────
 
-Intrări analizate: ${data.entries_count || 0}
+Intrari analizate: ${data.entries_count || 0}
 
 ════════════════════════════════════════════════`;
 
         setTerminalText(text);
       } else {
-        setTerminalText(`> EROARE: ${data.error || 'Nu s-a putut încărca rezumatul'}`);
+        setTerminalText(`> EROARE: ${data.error || 'Nu s-a putut incarca rezumatul'}`);
       }
     } catch (error) {
       setTerminalText(`> EROARE DE CONEXIUNE\n> ${error.message}`);
@@ -81,7 +80,7 @@ Intrări analizate: ${data.entries_count || 0}
   };
 
   // ============================================================
-  // ===============  STATISTICI SĂPTĂMÂNALE  ===================
+  // ===============  STATISTICI SAPTAMANALE  ===================
   // ============================================================
 
   const loadWeeklyStats = async () => {
@@ -101,14 +100,14 @@ Intrări analizate: ${data.entries_count || 0}
 > STATUS: OK
 
 ╔════════════════════════════════════════════════════╗
-                  RAPORT SĂPTĂMÂNAL
+                  RAPORT SAPTAMANAL
         ${r.period}
 ╚════════════════════════════════════════════════════╝
 
 Total taskuri create: ${r.total_tasks}
 Taskuri completate:   ${r.completed_tasks}
 Taskuri restante:     ${r.pending_tasks}
-Rată de completare:   ${r.completion_rate}%
+Rata de completare:   ${r.completion_rate}%
 
 ────────────────────────────────────────────────
 
@@ -117,7 +116,7 @@ Rată de completare:   ${r.completion_rate}%
 CATEGORII:
 ${Object.entries(r.categories).map(([k,v]) => `• ${k}: ${v}`).join("\n")}
 
-PRIORITĂȚI:
+PRIORITATI:
 ${Object.entries(r.priorities).map(([k,v]) => `• ${k}: ${v}`).join("\n")}
 
 ────────────────────────────────────────────────
@@ -280,8 +279,6 @@ const processAndSendAudio = async () => {
     if (result.success) {
       setStatusMessage('Procesare completa!');
       
-      // 🔥 EMITEM EVENIMENTUL todoAdded ÎNTOTDEAUNA când se adaugă un task
-      // Nu mai verificăm dacă panoul TODO e deschis - bara de progres trebuie să se actualizeze oricum!
       if (result.classification?.type === 'TODO') {
         window.dispatchEvent(new Event('todoAdded'));
       }
@@ -407,7 +404,7 @@ const processAndSendAudio = async () => {
         speed={30}
       />
 
-      {/* 🔔 NOTIFICĂRI TASKURI - ADĂUGAT AICI */}
+      {/* NOTIFICARI TASKURI - ADAUGAT AICI */}
       <TaskNotificationsContainer />
     </div>
   );

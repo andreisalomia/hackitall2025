@@ -81,8 +81,7 @@ class ClaudeService:
             (r'la (\d+) dupa-amiaza|dupa-amiaza la (\d+)|dupa-amiaza la (\d+)', lambda h: f"{int(h) + 12 if int(h) < 12 else int(h):02d}:00"),
             (r'la (\d+) seara|seara la (\d+)|sara la (\d+)', lambda h: f"{int(h) + 12 if int(h) < 12 else int(h):02d}:00"),
             (r'la (\d+) noaptea|noaptea la (\d+)', lambda h: f"{int(h) + 12 if int(h) < 12 else int(h):02d}:00"),
-            
-            # Ore fara "la"
+
             (r'(\d+) dimineata|dimineata (\d+)', lambda h: f"{int(h):02d}:00"),
             (r'(\d+) dupa-amiaza|dupa-amiaza (\d+)', lambda h: f"{int(h) + 12 if int(h) < 12 else int(h):02d}:00"),
         ]

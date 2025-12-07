@@ -2,10 +2,6 @@ import React from 'react';
 import { useTaskNotifications } from './useTaskNotifications';
 import TaskNotification from './TaskNotification';
 
-/**
- * Container pentru afișarea notificărilor de taskuri
- * Trebuie adăugat la nivelul principal al aplicației (în App.jsx sau TapeRecorder.jsx)
- */
 const TaskNotificationsContainer = () => {
   const { activeNotifications, dismissNotification } = useTaskNotifications();
 

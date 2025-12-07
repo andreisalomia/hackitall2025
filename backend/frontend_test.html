@@ -5,10 +5,10 @@
   <title>Test Recorder → Backend</title>
 </head>
 <body>
-  <h1>🎤 Test înregistrare și upload la backend</h1>
+  <h1>Test inregistrare si upload la backend</h1>
 
-  <button id="startBtn">Start înregistrare</button>
-  <button id="stopBtn" disabled>Stop și trimite</button>
+  <button id="startBtn">Start inregistrare</button>
+  <button id="stopBtn" disabled>Stop si trimite</button>
 
   <p id="status"></p>
   <pre id="response"></pre>
@@ -25,12 +25,12 @@
     startBtn.onclick = async () => {
       chunks = [];
       responseBox.textContent = "";
-      status.textContent = "🎙 Înregistrare în curs...";
+      status.textContent = "Inregistrare in curs...";
 
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
       mediaRecorder = new MediaRecorder(stream, {
-        mimeType: "audio/webm"  // Browser default
+        mimeType: "audio/webm"
       });
 
       mediaRecorder.ondataavailable = (e) => chunks.push(e.data);
@@ -38,26 +38,19 @@
       mediaRecorder.onstop = async () => {
         status.textContent = "Procesare audio...";
 
-        // Construim Blob-ul final
         const blob = new Blob(chunks, { type: "audio/webm" });
-
-        // Convertim automat la WAV pe backend? 
-        // NU — backend-ul tău actual acceptă doar WAV,
-        // deci facem conversia la WAV în frontend folosind WavEncoder:
 
         const arrayBuffer = await blob.arrayBuffer();
         const audioCtx = new AudioContext();
         const audioData = await audioCtx.decodeAudioData(arrayBuffer);
 
-        // Convertim PCM RAW → WAV
         const wavBuffer = encodeWAV(audioData);
         const wavBlob = new Blob([wavBuffer], { type: "audio/wav" });
 
-        // Upload la backend
         const formData = new FormData();
         formData.append("audio", wavBlob, "recording.wav");
 
-        status.textContent = "⏳ Trimitere la backend...";
+        status.textContent = "Trimitere la backend...";
 
         const resp = await fetch("http://localhost:5000/recordings/upload", {
           method: "POST",
@@ -65,7 +58,7 @@
         });
 
         const json = await resp.json();
-        status.textContent = "✔ Răspuns primit!";
+        status.textContent = "✔ Raspuns primit!";
         responseBox.textContent = JSON.stringify(json, null, 2);
       };
 
@@ -81,15 +74,10 @@
       status.textContent = "Procesare...";
     };
 
-    // -----------------------------------
-    // Funcție care encodează WAV corect:
-    // PCM 16-bit, 16 kHz, mono
-    // -----------------------------------
     function encodeWAV(audioBuffer) {
       const sampleRate = 16000;
       const channelData = audioBuffer.getChannelData(0); // mono
 
-      // Resampling
       const resampled = resample(channelData, audioBuffer.sampleRate, sampleRate);
 
       const buffer = new ArrayBuffer(44 + resampled.length * 2);

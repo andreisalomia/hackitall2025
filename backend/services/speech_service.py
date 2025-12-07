@@ -9,9 +9,6 @@ class SpeechService:
         self.recognizer.dynamic_energy_threshold = True
 
     def transcribe_audio(self, audio_file):
-        """Primește un WAV din frontend și îl transcrie în text."""
-
-        # Salvăm fișierul primit
         with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp:
             audio_file.save(tmp.name)
             wav_path = tmp.name
@@ -25,7 +22,7 @@ class SpeechService:
             return text
 
         except sr.UnknownValueError:
-            raise Exception("Nu s-a putut înțelege audio-ul.")
+            raise Exception("Nu s-a putut intelege audio-ul.")
         except Exception as e:
             raise Exception(f"Eroare la procesarea audio-ului: {e}")
         finally:

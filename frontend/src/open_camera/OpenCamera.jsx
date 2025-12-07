@@ -13,35 +13,32 @@ const OpenCamera = ({ onNext }) => {
   const [isComplete, setIsComplete] = useState(false);
   const detectionIntervalRef = useRef(null);
 
-  // Încărcăm modelele DIRECT de pe CDN (fără să le descărcăm local!)
   useEffect(() => {
     const loadModels = async () => {
       try {
-        // Folosim CDN-ul public pentru modele - NU mai trebuie descărcate!
         const MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model';
         
-        console.log('📦 Loading face detection models from CDN...');
+        console.log('Loading face detection models from CDN...');
         
         await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
         await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
         await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
         
-        console.log('✅ Face detection models loaded successfully from CDN!');
+        console.log('Face detection models loaded successfully from CDN!');
         setModelsLoaded(true);
       } catch (err) {
-        console.error('❌ Error loading face detection models:', err);
-        console.log('💡 Trying alternative CDN...');
+        console.error('Error loading face detection models:', err);
+        console.log('Trying alternative CDN...');
         
-        // Fallback - încercăm alt CDN
         try {
           const FALLBACK_URL = 'https://justadudewhohacks.github.io/face-api.js/models';
           await faceapi.nets.tinyFaceDetector.loadFromUri(FALLBACK_URL);
           await faceapi.nets.faceLandmark68Net.loadFromUri(FALLBACK_URL);
           await faceapi.nets.faceRecognitionNet.loadFromUri(FALLBACK_URL);
-          console.log('✅ Models loaded from fallback CDN!');
+          console.log('Models loaded from fallback CDN!');
           setModelsLoaded(true);
         } catch (fallbackErr) {
-          console.error('❌ Fallback also failed:', fallbackErr);
+          console.error('Fallback also failed:', fallbackErr);
         }
       }
     };
@@ -49,7 +46,6 @@ const OpenCamera = ({ onNext }) => {
     loadModels();
   }, []);
 
-  // Pornim camera
   useEffect(() => {
     let currentStream = null;
 
@@ -68,7 +64,6 @@ const OpenCamera = ({ onNext }) => {
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
           
-          // Setup canvas când video-ul e gata
           videoRef.current.onloadedmetadata = () => {
             if (canvasRef.current && videoRef.current) {
               canvasRef.current.width = videoRef.current.videoWidth;
@@ -77,7 +72,7 @@ const OpenCamera = ({ onNext }) => {
           };
         }
       } catch (err) {
-        console.error("❌ Eroare la accesarea camerei:", err);
+        console.error("Eroare la accesarea camerei:", err);
         setHasPermission(false);
       }
     };
@@ -94,20 +89,17 @@ const OpenCamera = ({ onNext }) => {
     };
   }, []);
 
-  // Începem detecția când modelele sunt încărcate și camera pornește
   useEffect(() => {
     if (!modelsLoaded || !videoRef.current) return;
 
     const startFaceDetection = async () => {
-      // Așteptăm să se încarce video-ul complet
       if (videoRef.current.readyState !== 4) {
         setTimeout(startFaceDetection, 500);
         return;
       }
 
-      console.log('🎬 Starting face detection...');
+      console.log('Starting face detection...');
 
-      // Rulăm detecția la fiecare 300ms pentru tracking fluid
       detectionIntervalRef.current = setInterval(async () => {
         if (!videoRef.current) return;
 
@@ -120,7 +112,6 @@ const OpenCamera = ({ onNext }) => {
             .withFaceLandmarks()
             .withFaceDescriptor();
 
-          // Curățăm canvas-ul
           const canvas = canvasRef.current;
           if (canvas) {
             const ctx = canvas.getContext('2d');
@@ -128,68 +119,58 @@ const OpenCamera = ({ onNext }) => {
           }
 
           if (detection) {
-            console.log('👤 FACE DETECTED!');
+            console.log('FACE DETECTED!');
             console.log('Detection score:', detection.detection.score);
             
-            // DESENĂM CHENARUL VERDE în jurul feței
             if (canvas) {
               const ctx = canvas.getContext('2d');
               const box = detection.detection.box;
               
-              // Culoare dinamică bazată pe status
-              let boxColor = '#00ff00'; // Verde default
+              let boxColor = '#00ff00';
               if (isComplete) {
-                boxColor = '#00ff00'; // Verde strălucitor pentru complete
+                boxColor = '#00ff00';
               } else if (isAuthenticating) {
-                boxColor = '#00ffff'; // Cyan pentru autentificare
+                boxColor = '#00ffff';
               } else if (faceDetected) {
-                boxColor = '#00ff00'; // Verde pentru detectat
+                boxColor = '#00ff00';
               }
               
-              // Stil chenar cu culoare dinamică
               ctx.strokeStyle = boxColor;
               ctx.lineWidth = 4;
               ctx.shadowBlur = 15;
               ctx.shadowColor = boxColor;
               
-              // Desenăm dreptunghiul
               ctx.strokeRect(box.x, box.y, box.width, box.height);
               
-              // Adăugăm colțuri mai groase pentru efect retro
               const cornerLength = 20;
               ctx.lineWidth = 6;
               
-              // Colț stânga-sus
               ctx.beginPath();
               ctx.moveTo(box.x, box.y + cornerLength);
               ctx.lineTo(box.x, box.y);
               ctx.lineTo(box.x + cornerLength, box.y);
               ctx.stroke();
               
-              // Colț dreapta-sus
               ctx.beginPath();
               ctx.moveTo(box.x + box.width - cornerLength, box.y);
               ctx.lineTo(box.x + box.width, box.y);
               ctx.lineTo(box.x + box.width, box.y + cornerLength);
               ctx.stroke();
               
-              // Colț stânga-jos
               ctx.beginPath();
               ctx.moveTo(box.x, box.y + box.height - cornerLength);
               ctx.lineTo(box.x, box.y + box.height);
               ctx.lineTo(box.x + cornerLength, box.y + box.height);
               ctx.stroke();
               
-              // Colț dreapta-jos
               ctx.beginPath();
               ctx.moveTo(box.x + box.width - cornerLength, box.y + box.height);
               ctx.lineTo(box.x + box.width, box.y + box.height);
               ctx.lineTo(box.x + box.width, box.y + box.height - cornerLength);
               ctx.stroke();
               
-              // Text dinamic bazat pe status
               ctx.font = 'bold 16px "Courier New"';
-              ctx.fillStyle = boxColor; // Aceeași culoare ca și chenarul
+              ctx.fillStyle = boxColor;
               ctx.shadowBlur = 10;
               ctx.shadowColor = boxColor;
               
@@ -202,32 +183,27 @@ const OpenCamera = ({ onNext }) => {
               
               ctx.fillText(statusText, box.x, box.y - 10);
               
-              // Afișăm confidence score
               ctx.font = '12px "Courier New"';
               ctx.fillText(`${(detection.detection.score * 100).toFixed(1)}%`, 
                           box.x, box.y + box.height + 20);
             }
             
-            // Prima detectare - începem countdown
             if (!faceDetected) {
-              console.log('👤 FIRST FACE DETECTED!');
+              console.log('FIRST FACE DETECTED!');
               console.log('Detection score:', detection.detection.score);
               setFaceDetected(true);
               
-              // După 2 secunde de detectare continuă, trecem la "Authenticating"
               setTimeout(() => {
                 setIsAuthenticating(true);
                 
-                // După încă 3 secunde, marcăm ca "Complete"
                 setTimeout(() => {
                   setIsComplete(true);
                 }, 3000);
               }, 2000);
             }
           } else {
-            // Nu s-a detectat față - resetăm flag dacă nu am început autentificarea
             if (faceDetected && !isAuthenticating) {
-              console.log('⚠️ Face lost, resetting...');
+              console.log('Face lost, resetting...');
               setFaceDetected(false);
             }
           }
@@ -306,16 +282,13 @@ const OpenCamera = ({ onNext }) => {
           <button 
             className="continue-button" 
             onClick={() => {
-              // Oprim tracking-ul când user-ul continuă
               if (detectionIntervalRef.current) {
                 clearInterval(detectionIntervalRef.current);
               }
-              // Curățăm canvas-ul
               if (canvasRef.current) {
                 const ctx = canvasRef.current.getContext('2d');
                 ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
               }
-              // Mergem la următoarea pagină
               onNext();
             }} 
             disabled={!hasPermission || !isComplete}

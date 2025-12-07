@@ -5,26 +5,22 @@ const TaskNotification = ({ task, onDismiss }) => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    // Animație de intrare
     setTimeout(() => setIsVisible(true), 50);
   }, []);
 
   const handleDismiss = () => {
     setIsVisible(false);
-    setTimeout(() => onDismiss(), 300); // Așteaptă animația de ieșire
+    setTimeout(() => onDismiss(), 300);
   };
 
   const handleMarkComplete = async () => {
     try {
-      // Marcăm taskul ca done
       await fetch(`http://localhost:5000/todos/${task._id}/complete`, {
         method: 'PUT'
       });
       
-      // Dispare notificarea
       handleDismiss();
       
-      // Notifică TodoList să se reîncarce (dacă e deschis)
       window.dispatchEvent(new Event('todoAdded'));
     } catch (error) {
       console.error('Eroare la marcarea taskului:', error);
@@ -79,7 +75,7 @@ const TaskNotification = ({ task, onDismiss }) => {
         {/* Border animat */}
         <div className="notification-border-top"></div>
 
-        {/* Conținut principal */}
+        {/* Continut principal */}
         <div className="notification-body">
           {/* Simbol prioritate mare */}
           <div className="priority-icon">
@@ -89,7 +85,7 @@ const TaskNotification = ({ task, onDismiss }) => {
             </div>
           </div>
 
-          {/* Informații task */}
+          {/* Informatii task */}
           <div className="task-info">
             <div className="info-label">TASK PRIORITATE {task.priority?.toUpperCase() || 'MEDIE'}</div>
             <div className="task-title">{task.task}</div>
@@ -111,7 +107,7 @@ const TaskNotification = ({ task, onDismiss }) => {
               )}
             </div>
 
-            {/* Subtasks dacă există */}
+            {/* Subtasks daca exista */}
             {task.subtasks && task.subtasks.length > 0 && (
               <div className="subtasks-preview">
                 {task.subtasks.slice(0, 3).map((subtask, idx) => (
@@ -127,7 +123,7 @@ const TaskNotification = ({ task, onDismiss }) => {
               </div>
             )}
 
-            {/* Buton MARCARE DONE - mare și vizibil */}
+            {/* Buton MARCARE DONE - mare si vizibil */}
             <button className="mark-done-btn" onClick={handleMarkComplete}>
               <span className="done-icon">✓</span>
               <span className="done-text">AM TERMINAT TASKUL</span>
@@ -135,10 +131,10 @@ const TaskNotification = ({ task, onDismiss }) => {
           </div>
         </div>
 
-        {/* Footer cu instrucțiuni */}
+        {/* Footer cu instructiuni */}
         <div className="notification-footer">
           <div className="footer-text">
-            <span className="blink">▶</span> CLICK [AM TERMINAT] SAU [ESC] PENTRU ÎNCHIDERE
+            <span className="blink">▶</span> CLICK [AM TERMINAT] SAU [ESC] PENTRU INCHIDERE
           </div>
         </div>
 

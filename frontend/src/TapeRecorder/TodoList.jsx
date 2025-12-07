@@ -8,14 +8,12 @@ const TodoList = ({ onClose }) => {
   const [pendingDelete, setPendingDelete] = useState(null);
   const [undoTimeout, setUndoTimeout] = useState(null);
 
-  // Functie pentru incarcarea TODO-urilor
   const loadTodos = async () => {
     try {
       const response = await fetch('http://localhost:5000/todos/active');
       const data = await response.json();
       
       if (data.success) {
-        // Sortam dupa prioritate: ridicata, medie, scazuta
         const priorityOrder = { 'ridicata': 1, 'medie': 2, 'scazuta': 3 };
         const sorted = data.todos.sort((a, b) => {
           return priorityOrder[a.priority] - priorityOrder[b.priority];
@@ -64,7 +62,6 @@ const TodoList = ({ onClose }) => {
     }
     
     try {
-      // Apelam backend-ul pentru a marca task-ul ca necompletat
       const response = await fetch(`http://localhost:5000/todos/${pendingDelete.id}/uncomplete`, {
         method: 'PUT'
       });

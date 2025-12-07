@@ -7,12 +7,10 @@ const DailyProgressBar = () => {
   const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  // Funcție pentru a calcula progresul zilnic
   const fetchDailyProgress = async () => {
     try {
       const today = new Date().toISOString().split('T')[0];
       
-      // Fetch toate task-urile din ziua curentă
       const response = await fetch(`http://localhost:5000/todos/daily-progress?date=${today}`);
       const data = await response.json();
       
@@ -28,16 +26,14 @@ const DailyProgressBar = () => {
       
       setLoading(false);
     } catch (error) {
-      console.error('Eroare la încărcarea progresului zilnic:', error);
+      console.error('Eroare la incarcarea progresului zilnic:', error);
       setLoading(false);
     }
   };
 
-  // Încărcăm progresul la montarea componentei
   useEffect(() => {
     fetchDailyProgress();
     
-    // Listener pentru update-uri de task-uri
     const handleTaskUpdate = () => {
       fetchDailyProgress();
     };

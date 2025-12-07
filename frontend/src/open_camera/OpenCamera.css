@@ -1,6 +1,5 @@
 /* frontend/src/open_camera/OpenCamera.css */
 
-/* Importăm fontul retro direct aici pentru rapiditate */
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
 .desktop {
@@ -12,170 +11,6 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-}
-
-.open-camera-container {
-  height: 100vh;
-  width: 100vw;
-  justify-content: center;
-  align-items: center;
-  font-family: 'Press Start 2P', cursive;
-
-  /* --- FUNDAL CAIET DE MATEMATICĂ (GRID) --- */
-  
-}
-
-.app-title {
-  font-size: 3rem;
-  color: #2c3e50;
-  text-shadow: 4px 4px #ff0055; /* Umbră colorată */
-  margin-bottom: 3rem;
-  text-align: center;
-  line-height: 1.5;
-}
-
-.button-group {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 15px;
-}
-
-.press-text {
-  font-size: 0.8rem;
-  color: #555;
-  animation: blink 1s infinite;
-}
-
-.retro-btn {
-  font-family: 'Press Start 2P', cursive;
-  font-size: 1.5rem;
-  padding: 20px 40px;
-  background-color: #ff0055;
-  color: white;
-  border: 4px solid black;
-  box-shadow: 8px 8px 0px black; /* Efectul 3D dur */
-  cursor: pointer;
-  transition: all 0.1s;
-}
-
-.retro-btn:hover {
-  transform: translate(2px, 2px);
-  box-shadow: 6px 6px 0px black;
-}
-
-.retro-btn:active {
-  transform: translate(8px, 8px);
-  box-shadow: 0px 0px 0px black;
-}
-
-.center-image {
-  max-width: 80%;
-  max-height: 60%; /* Mai mic puțin ca să aibă loc butonul */
-  object-fit: contain;
-  margin-bottom: 20px; /* Spațiu între monitor și buton */
-}
-
-/* --- Containerul pentru suprapunere --- */
-.monitor-wrapper {
-  position: relative; /* Esențial pentru poziționarea absolută a copilului */
-  width: 90%;       /* Ajustează mărimea totală a monitorului pe ecran */
-  max-width: 750px;
-  aspect-ratio: 4 / 3; /* Presupunând că monitorul e mai pătrățos (retro) */
-}
-
-/* Imaginea statică a monitorului (rama) */
-.monitor-frame {
-  width: 100%;
-  height: auto;
-  display: block;
-  /* O punem pe un z-index mai mic */
-  z-index: 1; 
-  position: relative;
-}
-
-/* --- Feed-ul video de la cameră --- */
-.webcam-feed {
-  position: absolute;
-  /* AICI ESTE PARTEA DE FINE TUNING. 
-     Aceste procente trebuie ajustate "din ochi" pentru a se potrivi 
-     în ecranul imaginii tale monitor.png */
-  top: 7.9%;      /* Cât de jos față de marginea de sus a imaginii */
-  left: 6%;     /* Cât de la dreapta față de marginea stângă */
-  width: 88%;    /* Lățimea zonei de ecran */
-  height: 60.7%;   /* Înălțimea zonei de ecran */
-  
-  object-fit: cover; /* Asigură că imaginea camerei umple spațiul fără să se deformeze */
-  z-index: 2; /* Peste rama monitorului */
-  background-color: #000; /* Fundal negru până se încarcă camera */
-  
-  /* Opțional: efecte retro pe video */
-  filter: contrast(1.2) sepia(0.2);
-}
-
-/* Mesaj eroare cameră */
-.error-message {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 10;
-  background: rgba(255,0,0,0.8);
-  padding: 20px;
-}
-
-/* Controalele de sub monitor */
-.camera-controls {
-  margin-top: 30px;
-}
-
-/* Stil pentru buton */
-.next-btn {
-  background-color: #ff0055; /* O culoare retro/accent */
-  color: white;
-  border: 4px solid #fff;
-  padding: 15px 30px;
-  font-family: 'Press Start 2P', cursive; /* Font retro */
-  font-size: 1.2rem;
-  font-weight: bold;
-  cursor: pointer;
-  text-transform: uppercase;
-  box-shadow: 4px 4px 0px #000; /* Umbră pixelată */
-  transition: transform 0.1s;
-}
-
-.next-btn:active {
-  transform: translate(2px, 2px);
-  box-shadow: 2px 2px 0px #000;
-}
-
-.next-btn:disabled {
-  background-color: #555;
-  border-color: #999;
-  cursor: not-allowed;
-}
-
-.welcome-container {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 10;
-  width: 90%;
-  max-width: 800px;
-}
-
-.welcome-content {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 5px;
-  background: #000000;
-  border: 3px solid #00ff00;
-  padding: 20px;
-  box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
-  /* Added terminal window styling */
 }
 
 .welcome-content-camera {
@@ -193,25 +28,6 @@
   overflow: auto;
 }
 
-.continue-button {
-  background: #000000;
-  border: 3px solid #00ff00;
-  color: #00ff00;
-  font-size: 24px;
-  font-weight: bold;
-  padding: 0px 48px;
-  cursor: pointer;
-  box-shadow: 0 0 10px rgba(0, 255, 0, 0.5), inset 0 0 10px rgba(0, 255, 0, 0.2);
-  /* transition: all 0.2s; */
-  position: relative;
-  font-family: "Courier New", monospace;
-  letter-spacing: 4px;
-  margin-top: 0px;
-  text-transform: uppercase;
-  animation: waiting 7s 0s forwards, 
-            fadeIn 1s 7s forwards;
-}
-
 .welcome-title-static {
   font-size: 36px;
   font-weight: bold;
@@ -220,78 +36,199 @@
   letter-spacing: 4px;
   font-family: "Courier New", monospace;
   width: 100%;
-  text-align: center; /* Center the text */
-  /* animation: typing 2s steps(20, end), blink 0.5s step-end infinite alternate; */
-  white-space: nowrap;
-  overflow: hidden;
+  text-align: center;
+  margin-bottom: 20px;
 }
 
-.finding-user {
-  margin-top: 0px;
-  font-size: 24px;
-  font-weight: bold;
-  color: #00ff00;
-  text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
-  font-family: "Courier New", monospace;
+/* Monitor wrapper pentru suprapunere */
+.monitor-wrapper {
+  position: relative;
+  width: 90%;
+  max-width: 750px;
+  aspect-ratio: 4 / 3;
+  margin-bottom: 20px;
+}
+
+.monitor-frame {
   width: 100%;
-  text-align: center; /* Center the text */
-  animation: waiting 2s 0s forwards, 
-            fadeIn 1s 2s forwards;
-  /* opacity: 0; Make it disappear suddenly */
+  height: auto;
+  display: block;
+  z-index: 1;
+  position: relative;
 }
 
-.auth {
-  margin-top: 0px;
-  font-size: 24px;
-  font-weight: bold;
+.webcam-feed {
+  position: absolute;
+  top: 7.9%;
+  left: 6%;
+  width: 88%;
+  height: 60.7%;
+  object-fit: cover;
+  z-index: 2;
+  background-color: #000;
+  filter: contrast(1.2) sepia(0.2);
+}
+
+/* Canvas pentru chenarul verde - peste video */
+.face-overlay-canvas {
+  position: absolute;
+  top: 7.9%;
+  left: 6%;
+  width: 88%;
+  height: 60.7%;
+  z-index: 3;
+  pointer-events: none; /* Nu blochează interacțiunea cu video-ul */
+}
+
+/* Loading models overlay */
+.loading-models {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  background: rgba(0, 255, 0, 0.15);
   color: #00ff00;
-  text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+  padding: 20px 40px;
+  border: 2px solid #00ff00;
   font-family: "Courier New", monospace;
-  width: 100%;
-  text-align: center; /* Center the text */
-  animation: waiting 2s 0s forwards, 
-            fadeIn 1s 2s forwards;
-  /* opacity: 0; Make it disappear suddenly */
+  font-size: 18px;
+  text-align: center;
+  animation: blink 1s infinite;
+  box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
 }
 
+/* Error message */
+.error-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  background: rgba(255, 0, 0, 0.8);
+  color: white;
+  padding: 20px;
+  border: 2px solid white;
+  font-family: "Courier New", monospace;
+}
+
+/* Status messages - toate au aceeași bază */
+.finding-user,
+.face-found,
+.auth,
 .complete {
   margin-top: 0px;
   font-size: 24px;
   font-weight: bold;
-  color: #00ff00;
   text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
   font-family: "Courier New", monospace;
   width: 100%;
-  text-align: center; /* Center the text */
-  animation: waiting 5s 0s forwards, 
-            fadeIn 1s 5s forwards;
-  /* opacity: 0; Make it disappear suddenly */
+  text-align: center;
+  min-height: 40px; /* Pentru a preveni "săritura" layout-ului */
 }
 
-@keyframes waiting {
-  0% { opacity: 0; }
-  100% { opacity: 0; }
+/* Finding user - animație de așteptare */
+.finding-user {
+  color: #ffff00; /* Galben pentru căutare */
+  animation: blink 1s infinite;
 }
 
-@keyframes fadeIn {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
+/* Face detected - verde strălucitor */
+.face-found {
+  color: #00ff00;
+  animation: pulse 0.5s ease-in-out;
 }
 
-@keyframes fadeOut {
-  0% { opacity: 1; }
-  100% { opacity: 0; }
+/* Authenticating - albastru cyan */
+.auth {
+  color: #00ffff;
+  animation: blink 1s infinite;
 }
 
+/* Complete - verde solid */
+.complete {
+  color: #00ff00;
+  animation: pulse 0.5s ease-in-out;
+}
+
+/* Continue button */
+.continue-button {
+  background: #000000;
+  border: 3px solid #00ff00;
+  color: #00ff00;
+  font-size: 24px;
+  font-weight: bold;
+  padding: 12px 48px;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.5), inset 0 0 10px rgba(0, 255, 0, 0.2);
+  position: relative;
+  font-family: "Courier New", monospace;
+  letter-spacing: 4px;
+  margin-top: 20px;
+  text-transform: uppercase;
+  transition: all 0.2s;
+}
+
+.continue-button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  border-color: #666;
+  color: #666;
+  box-shadow: none;
+}
+
+.continue-button:not(:disabled):hover {
+  background: #00ff00;
+  color: #000000;
+  box-shadow: 0 0 20px rgba(0, 255, 0, 0.8);
+}
+
+.continue-button:not(:disabled):active {
+  transform: scale(0.98);
+}
+
+/* Animations */
 @keyframes blink {
-  50% { opacity: 0; }
-}
-
-/* Responsive simplu pentru mobil */
-@media (max-width: 600px) {
-  .app-title {
-    font-size: 2rem;
-    padding: 0 20px;
+  0%, 49% {
+    opacity: 1;
+  }
+  50%, 100% {
+    opacity: 0.3;
   }
 }
 
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Responsive pentru mobil */
+@media (max-width: 600px) {
+  .welcome-title-static {
+    font-size: 24px;
+  }
+  
+  .finding-user,
+  .face-found,
+  .auth,
+  .complete {
+    font-size: 18px;
+  }
+  
+  .continue-button {
+    font-size: 18px;
+    padding: 10px 30px;
+  }
+  
+  .loading-models {
+    font-size: 14px;
+    padding: 15px 25px;
+  }
+}

@@ -8,14 +8,14 @@ const TodoList = ({ onClose }) => {
   const [pendingDelete, setPendingDelete] = useState(null);
   const [undoTimeout, setUndoTimeout] = useState(null);
 
-  // Funcție pentru încărcarea TODO-urilor
+  // Functie pentru incarcarea TODO-urilor
   const loadTodos = async () => {
     try {
       const response = await fetch('http://localhost:5000/todos/active');
       const data = await response.json();
       
       if (data.success) {
-        // Sortăm după prioritate: ridicată, medie, scăzută
+        // Sortam dupa prioritate: ridicata, medie, scazuta
         const priorityOrder = { 'ridicata': 1, 'medie': 2, 'scazuta': 3 };
         const sorted = data.todos.sort((a, b) => {
           return priorityOrder[a.priority] - priorityOrder[b.priority];
@@ -24,34 +24,28 @@ const TodoList = ({ onClose }) => {
       }
       setLoading(false);
     } catch (error) {
-      console.error('Eroare la încărcarea TODO-urilor:', error);
+      console.error('Eroare la incarcarea TODO-urilor:', error);
       setLoading(false);
     }
   };
 
-  // Funcție pentru marcarea ca done cu undo
   const markAsDone = async (todoId, todoTask) => {
-    // Setăm TODO-ul ca pending delete
     setPendingDelete({ id: todoId, task: todoTask });
     
     const todoToDelete = todos.find(t => t._id === todoId);
     
-    // Trimite IMEDIAT la backend
     try {
       await fetch(`http://localhost:5000/todos/${todoId}/complete`, {
         method: 'PUT'
       });
 
-      // 🔥 TRIGGER UPDATE PENTRU BARA DE PROGRES
       window.dispatchEvent(new Event('todoCompleted'));
     } catch (error) {
       console.error('Eroare:', error);
     }
     
-    // Elimină vizual din listă
     setTodos(prevTodos => prevTodos.filter(todo => todo._id !== todoId));
     
-    // Timeout doar pentru a șterge notificarea UNDO
     const timeout = setTimeout(() => {
       setPendingDelete(null);
     }, 5000);
@@ -59,7 +53,7 @@ const TodoList = ({ onClose }) => {
     setUndoTimeout(timeout);
   };
 
-  // Funcție pentru UNDO
+  // Functie pentru UNDO
   const undoDelete = async () => {
     if (!pendingDelete) return;
     
@@ -70,7 +64,7 @@ const TodoList = ({ onClose }) => {
     }
     
     try {
-      // Apelăm backend-ul pentru a marca task-ul ca necompletat
+      // Apelam backend-ul pentru a marca task-ul ca necompletat
       const response = await fetch(`http://localhost:5000/todos/${pendingDelete.id}/uncomplete`, {
         method: 'PUT'
       });
@@ -78,16 +72,13 @@ const TodoList = ({ onClose }) => {
       const data = await response.json();
       
       if (data.success) {
-        // 🔥 TRIGGER UPDATE PENTRU BARA DE PROGRES
         window.dispatchEvent(new Event('todoCompleted'));
         
-        // Reîncărcăm lista pentru a afișa task-ul restaurat
         await loadTodos();
         
-        // Notificare de succes
         notificationService.show({
           type: 'info',
-          title: 'Acțiune anulată',
+          title: 'Actiune anulata',
           message: `Task-ul "${pendingDelete.task}" a fost restaurat`,
           duration: 3000
         });
@@ -106,23 +97,22 @@ const TodoList = ({ onClose }) => {
         duration: 4000
       });
     } finally {
-      // Curățăm starea pending delete
+      // Curatam starea pending delete
       setPendingDelete(null);
     }
   };
 
-  // Funcție pentru testarea notificării
+  // Functie pentru testarea notificarii
   const testNotification = (todo) => {
     console.log('Test notificare pentru:', todo);
     notificationService.testNotification(todo);
   };
 
-  // Încărcăm TODO-urile la mount
+  // Incarcam TODO-urile la mount
   useEffect(() => {
     loadTodos();
   }, []);
 
-  // Cleanup la unmount
   useEffect(() => {
     return () => {
       if (undoTimeout) {
@@ -131,7 +121,6 @@ const TodoList = ({ onClose }) => {
     };
   }, [undoTimeout]);
 
-  // Listen pentru TODO-uri noi adăugate prin voce
   useEffect(() => {
     const handleTodoAdded = () => {
       loadTodos();
@@ -144,9 +133,9 @@ const TodoList = ({ onClose }) => {
     };
   }, []);
 
-  // Funcție pentru formatarea datei
+  // Functie pentru formatarea datei
   const formatDate = (dateString) => {
-    if (!dateString) return 'Fără deadline';
+    if (!dateString) return 'Fara deadline';
     const date = new Date(dateString);
     return date.toLocaleDateString('ro-RO', { 
       day: '2-digit', 
@@ -157,7 +146,7 @@ const TodoList = ({ onClose }) => {
     });
   };
 
-  // Funcție pentru determinarea clasei de prioritate
+  // Functie pentru determinarea clasei de prioritate
   const getPriorityClass = (priority) => {
     switch(priority) {
       case 'ridicata': return 'priority-high';
@@ -167,7 +156,7 @@ const TodoList = ({ onClose }) => {
     }
   };
 
-  // Funcție pentru simbolul de prioritate
+  // Functie pentru simbolul de prioritate
   const getPrioritySymbol = (priority) => {
     switch(priority) {
       case 'ridicata': return '⚠';
@@ -256,7 +245,7 @@ const TodoList = ({ onClose }) => {
                 <button 
                   className="test-notification-btn"
                   onClick={() => testNotification(todo)}
-                  title="Testează notificarea pentru acest task"
+                  title="Testeaza notificarea pentru acest task"
                 >
                   <span className="bell-icon">🔔</span>
                   <span className="test-label">TEST</span>

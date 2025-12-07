@@ -42,7 +42,8 @@ const TodoList = ({ onClose }) => {
         method: 'PUT'
       });
 
-          window.dispatchEvent(new Event('todoCompleted'));
+      // 🔥 TRIGGER UPDATE PENTRU BARA DE PROGRES
+      window.dispatchEvent(new Event('todoCompleted'));
     } catch (error) {
       console.error('Eroare:', error);
     }
@@ -59,56 +60,56 @@ const TodoList = ({ onClose }) => {
   };
 
   // Funcție pentru UNDO
-const undoDelete = async () => {
-  if (!pendingDelete) return;
-  
-  // Oprim timeout-ul
-  if (undoTimeout) {
-    clearTimeout(undoTimeout);
-    setUndoTimeout(null);
-  }
-  
-  try {
-    // Apelăm backend-ul pentru a marca task-ul ca necompletat
-    const response = await fetch(`http://localhost:5000/todos/${pendingDelete.id}/uncomplete`, {
-      method: 'PUT'
-    });
+  const undoDelete = async () => {
+    if (!pendingDelete) return;
     
-    const data = await response.json();
-    
-    if (data.success) {
-      // 🔥 TRIGGER UPDATE PENTRU BARA DE PROGRES
-      window.dispatchEvent(new Event('todoCompleted'));
-      
-      // Reîncărcăm lista pentru a afișa task-ul restaurat
-      await loadTodos();
-      
-      // Notificare de succes
-      notificationService.show({
-        type: 'info',
-        title: 'Acțiune anulată',
-        message: `Task-ul "${pendingDelete.task}" a fost restaurat`,
-        duration: 3000
-      });
-    } else {
-      throw new Error(data.error || 'Eroare la restaurarea task-ului');
+    // Oprim timeout-ul
+    if (undoTimeout) {
+      clearTimeout(undoTimeout);
+      setUndoTimeout(null);
     }
     
-  } catch (error) {
-    console.error('Eroare la undo:', error);
-    
-    // Notificare de eroare
-    notificationService.show({
-      type: 'error',
-      title: 'Eroare',
-      message: `Nu s-a putut restaura task-ul: ${error.message}`,
-      duration: 4000
-    });
-  } finally {
-    // Curățăm starea pending delete
-    setPendingDelete(null);
-  }
-};
+    try {
+      // Apelăm backend-ul pentru a marca task-ul ca necompletat
+      const response = await fetch(`http://localhost:5000/todos/${pendingDelete.id}/uncomplete`, {
+        method: 'PUT'
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        // 🔥 TRIGGER UPDATE PENTRU BARA DE PROGRES
+        window.dispatchEvent(new Event('todoCompleted'));
+        
+        // Reîncărcăm lista pentru a afișa task-ul restaurat
+        await loadTodos();
+        
+        // Notificare de succes
+        notificationService.show({
+          type: 'info',
+          title: 'Acțiune anulată',
+          message: `Task-ul "${pendingDelete.task}" a fost restaurat`,
+          duration: 3000
+        });
+      } else {
+        throw new Error(data.error || 'Eroare la restaurarea task-ului');
+      }
+      
+    } catch (error) {
+      console.error('Eroare la undo:', error);
+      
+      // Notificare de eroare
+      notificationService.show({
+        type: 'error',
+        title: 'Eroare',
+        message: `Nu s-a putut restaura task-ul: ${error.message}`,
+        duration: 4000
+      });
+    } finally {
+      // Curățăm starea pending delete
+      setPendingDelete(null);
+    }
+  };
 
   // Funcție pentru testarea notificării
   const testNotification = (todo) => {

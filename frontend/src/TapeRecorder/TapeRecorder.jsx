@@ -252,54 +252,54 @@ ${r.pending_list.length === 0 ? "• Niciun task" :
     }
   };
 
-  const processAndSendAudio = async () => {
-    try {
-      const blob = new Blob(chunksRef.current, { type: 'audio/webm' });
+const processAndSendAudio = async () => {
+  try {
+    const blob = new Blob(chunksRef.current, { type: 'audio/webm' });
 
-      setStatusMessage('Se converteste la WAV...');
+    setStatusMessage('Se converteste la WAV...');
 
-      const arrayBuffer = await blob.arrayBuffer();
-      const audioContext = new AudioContext();
-      const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+    const arrayBuffer = await blob.arrayBuffer();
+    const audioContext = new AudioContext();
+    const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
 
-      const wavBuffer = encodeWAV(audioBuffer);
-      const wavBlob = new Blob([wavBuffer], { type: 'audio/wav' });
+    const wavBuffer = encodeWAV(audioBuffer);
+    const wavBlob = new Blob([wavBuffer], { type: 'audio/wav' });
 
-      setStatusMessage('Se trimite la server...');
+    setStatusMessage('Se trimite la server...');
 
-      const formData = new FormData();
-      formData.append('audio', wavBlob, 'recording.wav');
+    const formData = new FormData();
+    formData.append('audio', wavBlob, 'recording.wav');
 
-      const response = await fetch('http://localhost:5000/recordings/upload', {
-        method: 'POST',
-        body: formData
-      });
+    const response = await fetch('http://localhost:5000/recordings/upload', {
+      method: 'POST',
+      body: formData
+    });
+    
+    const result = await response.json();
+
+    if (result.success) {
+      setStatusMessage('Procesare completa!');
       
-      const result = await response.json();
-
-      if (result.success) {
-        setStatusMessage('Procesare completa!');
-        
-        if (result.classification?.type === 'TODO' && showTodoList) {
-          window.dispatchEvent(new Event('todoAdded'));
-        }
-
-          window.dispatchEvent(new Event('todoAdded'));
-
-        setTimeout(() => {
-          setStatusMessage('');
-          setIsProcessing(false);
-        }, 3000);
-
-      } else {
-        throw new Error(result.error || 'Eroare necunoscuta');
+      // 🔥 EMITEM EVENIMENTUL todoAdded ÎNTOTDEAUNA când se adaugă un task
+      // Nu mai verificăm dacă panoul TODO e deschis - bara de progres trebuie să se actualizeze oricum!
+      if (result.classification?.type === 'TODO') {
+        window.dispatchEvent(new Event('todoAdded'));
       }
 
-    } catch (error) {
-      setStatusMessage(`Eroare: ${error.message}`);
-      setIsProcessing(false);
+      setTimeout(() => {
+        setStatusMessage('');
+        setIsProcessing(false);
+      }, 3000);
+
+    } else {
+      throw new Error(result.error || 'Eroare necunoscuta');
     }
-  };
+
+  } catch (error) {
+    setStatusMessage(`Eroare: ${error.message}`);
+    setIsProcessing(false);
+  }
+};
 
   // ======================================================================
   // =======================  RENDER  UI  =================================

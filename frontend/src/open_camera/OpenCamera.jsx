@@ -225,7 +225,7 @@ const OpenCamera = ({ onNext }) => {
   return (
     <div className="desktop">
       <div className="welcome-content-camera">
-        <h1 className="welcome-title-static">TIME CAPSULE 95</h1>
+        <h1 className="welcome-title-static">RetroMind</h1>
         
         <div className="monitor-wrapper">
           <img 
